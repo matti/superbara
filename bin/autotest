@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+rspec spec
+fswatch -o lib spec | xargs -n1 -I{} rake

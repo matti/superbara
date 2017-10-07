@@ -1,0 +1,158 @@
+#!/usr/bin/env sh
+set -e
+
+Edit () {
+  if [ "$EDITOR" != "" ]; then
+    $EDITOR $1
+  else
+    for editor in code atom micro vim vi msword; do
+      set +e
+        command -v $editor
+        if [ "$?" = 0 ]; then
+          $editor $1
+          break
+        fi
+      set -e
+    done
+  fi
+}
+
+Prompt () {
+  while true; do
+    printf "superbara $1 (enter or [r]estart, [e]dit, [q]uit) > "
+    read input
+    case "$input" in
+      ""|"restart"|"r")
+        echo "starting.."
+        break
+      ;;
+      "edit"|"e")
+        Edit $1
+      ;;
+      "quit"|"exit"|"q")
+        echo "bye."
+        exit 0
+      ;;
+      *)
+        echo "err: Unknown input $input
+
+Usage:
+  enter (r, restart)  - restart test
+  e or edit           - open test in \$EDITOR (set to: $EDITOR) or best guess
+  q or quit           - exit
+
+"
+      ;;
+    esac
+  done
+}
+
+Usage () {
+  echo "USAGE: superbara
+
+  superbara init <testdir>
+  superbara edit <testdir>
+  superbara start <testdir>
+  superbara run <testdir>
+"
+  exit 0
+}
+
+Error () {
+  echo "err: $@"
+  exit 1
+}
+
+case $1 in
+  ""|"init")
+  ;;
+  *)
+    if [ -f $2 ]; then
+      test_file=$2
+    else
+      test_file="${2}/${2}_spec.rb"
+    fi
+
+    if [ ! -f "$test_file" ]; then
+      Error "$test_file not found, create it with superbara init first"
+    fi
+  ;;
+esac
+
+case $1 in
+  "edit")
+    Edit $test_file
+    exit 0
+  ;;
+  "init")
+    test_name=$(basename $2)
+    spec_file="${test_name}_spec.rb"
+    target_file="${2}/${spec_file}"
+
+    if [ -f "$target_file" ]; then
+      Error "$target_file already exists"
+    fi
+    mkdir -p $2
+    echo "RSpec.describe \"${test_name}\" do" > $target_file
+    echo '''  it "loads" do
+    visit "http://www.example.com"
+      more_link = find "a", text: /ore information/
+      debug
+      more_link.click
+      debug
+    end
+end''' >> "$target_file"
+
+    echo " --> created $target_file
+
+start testing with:
+
+  superbara start $2
+"
+    exit 0
+  ;;
+  "start")
+    shift
+    mode=workbench
+    break
+  ;;
+  "run")
+    shift
+    mode=single
+    break
+  ;;
+  *)
+    Usage
+  ;;
+esac
+
+while true; do
+  set +e
+    rspec --require superbara $@
+    rspec_exit_code=$?
+  set -e
+
+  case "$rspec_exit_code" in
+    0)
+      if [ "$mode" = "single" ]; then
+        exit 0
+      fi
+      Prompt $test_file
+    ;;
+    1)
+      echo "bye."
+      exit 0
+    ;;
+    2)
+      echo "retry"
+    ;;
+    99)
+      echo "control+c pressed, exiting..."
+      exit 0
+    ;;
+    *)
+      echo "err: unknown rspec exit code $rspec_exit_code"
+      exit 1
+    ;;
+  esac
+done

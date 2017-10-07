@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "superbara"
+
+include Superbara::DSL
+include Capybara::DSL
+
+Capybara::Session.new :chrome_remote
+
+visit "http://www.example.com"
+
+Pry.start

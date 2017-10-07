@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+base_path = File.dirname(File.dirname(__FILE__))
+
+Process.exec "#{base_path}/lib/supershell #{ARGV.join(' ')}"
