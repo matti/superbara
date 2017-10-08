@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    superbara (0.0.1)
-      binding_of_caller
+    superbara (0.0.2)
+      binding_of_caller (= 0.7.2)
       capybara (= 2.15.1)
       chromedriver-helper (= 1.1.0)
       colorize (= 0.8.1)
@@ -96,4 +96,4 @@ DEPENDENCIES
   superbara!
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

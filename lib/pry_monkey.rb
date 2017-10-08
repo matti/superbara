@@ -27,6 +27,9 @@ Pry.config.prompt = proc {
   prefix << "e".colorize(:light_blue).on_white.underline
   prefix << "dit, ".colorize(:black).on_white
 
+  prefix << "h".colorize(:light_blue).on_white.underline
+  prefix << "elp, ".colorize(:black).on_white
+
   prefix << "q".colorize(:light_blue).on_white.underline
   prefix << "uit".colorize(:black).on_white
 
