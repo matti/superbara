@@ -24,8 +24,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "colorize", "0.8.1"
   spec.add_dependency "pry-byebug", "3.4.2"
   spec.add_dependency "binding_of_caller", "0.7.2"
-  spec.add_dependency "capybara", "2.15.1"
-  spec.add_dependency "selenium-webdriver", "3.5.1"
+  spec.add_dependency "capybara", "2.16.0"
+  spec.add_dependency "selenium-webdriver", "3.7.0"
   spec.add_dependency "rspec", "3.6.0"
   spec.add_dependency "chromedriver-helper", "1.1.0"
 
