@@ -13,3 +13,10 @@ superbara start example
 
 https://github.com/SeleniumHQ/selenium/blob/master/rb/CHANGES
 https://github.com/teamcapybara/capybara/blob/master/History.md
+
+
+## Releasing
+
+```
+$ rake release
+```
