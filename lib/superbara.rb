@@ -6,7 +6,6 @@ require "capybara/dsl"
 require "selenium-webdriver"
 
 require_relative "pry_monkey"
-require_relative "functions"
 
 require_relative "superbara/version"
 require_relative "superbara/helpers"
