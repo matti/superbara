@@ -1,5 +1,6 @@
 require "pry-byebug"
 require "binding_of_caller"
+
 class Pry
   class Command::Whereami < Pry::ClassCommand
     alias_method :process_orig, :process
