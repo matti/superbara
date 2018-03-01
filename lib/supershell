@@ -93,14 +93,14 @@ case $1 in
       Error "$target_file already exists"
     fi
     mkdir -p $2
-    echo "RSpec.describe \"${test_name}\" do" > $target_file
-    echo '''  it "loads" do
+    echo '''RSpec.describe \"${test_name}\" do
+  it "loads" do
     visit "http://www.example.com"
-      more_link = find "a", text: /ore information/
-      debug
-      more_link.click
-      debug
-    end
+    more_link = find "a", text: /ore information/
+    debug
+    more_link.click
+    debug
+  end
 end''' >> "$target_file"
 
     echo " --> created $target_file
