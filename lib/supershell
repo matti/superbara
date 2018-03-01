@@ -128,7 +128,7 @@ esac
 
 while true; do
   set +e
-    rspec --require superbara $@
+    rspec --require superbara/rspec $@
     rspec_exit_code=$?
   set -e
 

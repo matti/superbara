@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "superbara"
+require "superbara/rspec"
 
 RSpec.configure do |config|
   config.fail_fast = true
