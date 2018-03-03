@@ -1,14 +1,14 @@
 PATH
   remote: .
   specs:
-    superbara (0.1.1)
-      binding_of_caller (~> 0.7.2)
-      capybara (~> 2.16.0)
-      chromedriver-helper (~> 1.1.0)
-      colorize (~> 0.8.1)
-      pry-byebug (~> 3.4.2)
-      rspec (~> 3.6.0)
-      selenium-webdriver (~> 3.7.0)
+    superbara (0.1.2)
+      binding_of_caller (~> 0.7, >= 0.7.2)
+      capybara (~> 2.16, >= 2.16.0)
+      chromedriver-helper (~> 1.1.0, >= 1.1.0)
+      colorize (~> 0.8, >= 0.8.1)
+      pry-byebug (~> 3.4, >= 3.4.2)
+      rspec (~> 3.6, >= 3.6.0)
+      selenium-webdriver (~> 3.7, >= 3.7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -88,9 +88,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.15)
-  rake (~> 10.0)
-  rerun (~> 0.11.0)
+  bundler (~> 1.15, >= 1.15.0)
+  rake (~> 10.0, >= 10.0.0)
+  rerun (~> 0.11, >= 0.11.0)
   superbara!
 
 BUNDLED WITH
