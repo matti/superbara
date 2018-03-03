@@ -1,6 +1,6 @@
 RSpec.describe Capybara do
   it "has a version number" do
-    expect(Capybara::VERSION).to eq "2.16.0"
+    expect(Capybara::VERSION).to eq "2.16.1"
   end
 
   it "sets default_max_wait_time to 1" do
