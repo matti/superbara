@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 set -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 Edit () {
   if [ "$EDITOR" != "" ]; then
@@ -85,8 +86,6 @@ case $1 in
     exit 0
   ;;
   "init")
-    DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
     test_name=$(basename $2)
     spec_file="main.rb"
     target_file="${2}/${spec_file}"
@@ -122,7 +121,7 @@ esac
 
 while true; do
   set +e
-    ruby -r./lib/superbara -r./lib/superbara/dsl "$1/"*.rb
+    ruby -r"$DIR/superbara" -r"$DIR/superbara/dsl" "$1/"*.rb
     exit_code=$?
   set -e
 
