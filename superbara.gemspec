@@ -22,14 +22,13 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'colorize', '~> 0.8', '>= 0.8.1'
-  spec.add_dependency 'pry-byebug', '~> 3.4', '>= 3.4.2'
-  spec.add_dependency 'binding_of_caller', '~> 0.7', '>=0.7.2'
-  spec.add_dependency 'capybara', '~> 2.16', '>= 2.16.0'
-  spec.add_dependency 'selenium-webdriver', '~> 3.7', '>= 3.7.0'
-  spec.add_dependency 'rspec', '~> 3.6', '>= 3.6.0'
-  spec.add_dependency 'chromedriver-helper', '~> 1.1.0', '>= 1.1.0'
+  spec.add_dependency 'pry-byebug', '~> 3.6', '>= 3.6.0'
+  spec.add_dependency 'binding_of_caller', '~> 0.8', '>=0.8.0'
+  spec.add_dependency 'capybara', '~> 3.0', '>= 3.0.0'
+  spec.add_dependency 'selenium-webdriver', '~> 3.11', '>= 3.11.0'
+  spec.add_dependency 'chromedriver-helper', '~> 1.2.0', '>= 1.2.0'
 
-  spec.add_development_dependency 'rerun', '~> 0.11', '>= 0.11.0'
   spec.add_development_dependency 'bundler', '~> 1.15', '>= 1.15.0'
   spec.add_development_dependency 'rake', '~> 10.0', '>= 10.0.0'
+  spec.add_development_dependency 'rspec', '~> 3.7', '>= 3.7.0'
 end

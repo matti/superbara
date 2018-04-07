@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "superbara"
-
-include Superbara::DSL
-include Capybara::DSL
-
-Capybara::Session.new :chrome_remote
+require_relative "../lib/superbara"
+require_relative "../lib/superbara/dsl"
 
 visit "http://www.example.com"
+h1 = find "h1"
+h1.highlight
 
 Pry.start

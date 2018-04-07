@@ -6,8 +6,8 @@ RSpec.describe Superbara do
       end
 
       it "loads" do
-        visit "http://localhost:8000/index.html"
-        expect(page).to have_content "Superbara"
+        visit "http://www.example.com"
+        expect(page).to have_content "Example Domain"
       end
 
       it "sets window size to 1680x1024 by default" do

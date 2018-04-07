@@ -27,7 +27,6 @@ window.setTimeout(function() {
     js << """
 }, #{remove_highlight})
 """
-
     Capybara.current_session.current_window.session.execute_script js
   end
 

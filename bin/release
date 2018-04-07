@@ -1,3 +1,7 @@
 #!/usr/bin/env sh
+set -e
+
+rake
+echo q | SUPERBARA_FRONTEND=noninteractive exe/superbara start e2e
 
 gem build superbara.gemspec

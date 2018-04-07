@@ -5,15 +5,14 @@ require "capybara"
 require "capybara/dsl"
 require "selenium-webdriver"
 
+require_relative "capybara_monkey"
 require_relative "pry_monkey"
 
 require_relative "superbara/version"
 require_relative "superbara/helpers"
+
 require_relative "superbara/drivers/chrome"
 require_relative "superbara/drivers/chrome_headless"
-
-require_relative "superbara/functions/debug.rb"
-require_relative "superbara/functions/wait.rb"
 
 trap "SIGINT" do
   puts "
@@ -28,6 +27,9 @@ control+c pressed, closing the browser..."
 
   exit 99
 end
+
+require "chromedriver/helper"
+Chromedriver.set_version "2.37"
 
 Capybara.default_driver = :chrome
 Capybara.default_max_wait_time = 1
