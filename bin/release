@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 set -e
+version=$(ruby -r./lib/superbara -e "puts Superbara::VERSION")
 
 rake
-echo q | SUPERBARA_FRONTEND=noninteractive exe/superbara start e2e
+SUPERBARA_FRONTEND=noninteractive exe/superbara run e2e
 
 gem build superbara.gemspec
+KUNG_ENV=build VERSION=$version kung build
 rake release
