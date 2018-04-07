@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 set -e
-version=$(ruby -r./lib/superbara -e "puts Superbara::VERSION")
+version=$(exe/superbara version)
 
 rake
 SUPERBARA_FRONTEND=noninteractive exe/superbara run e2e

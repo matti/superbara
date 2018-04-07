@@ -69,7 +69,7 @@ Error () {
 }
 
 case $1 in
-  ""|"init")
+  ""|"init"|"version")
   ;;
   *)
     if [ -f $2 ]; then
@@ -115,6 +115,10 @@ start testing with:
   "run")
     shift
     mode=single
+  ;;
+  "version")
+    ruby -r$DIR/superbara -e "puts Superbara::VERSION"
+    exit 0
   ;;
   *)
     Usage

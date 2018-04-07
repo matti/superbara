@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    superbara (0.2.3)
+    superbara (0.3.0)
       binding_of_caller (~> 0.8, >= 0.8.0)
       capybara (~> 3.0, >= 3.0.0)
       chromedriver-helper (~> 1.2.0, >= 1.2.0)

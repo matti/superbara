@@ -8,12 +8,17 @@ require "selenium-webdriver"
 require_relative "capybara_monkey"
 require_relative "pry_monkey"
 
+module Superbara
+  def self.puts(str)
+    return unless ENV["SUPERBARA_DEBUG"]
+    Kernel.puts "Superbara #{caller[0][/`.*'/][1..-2]}: #{str}"
+  end
+end
+
 require_relative "superbara/version"
 require_relative "superbara/helpers"
 
-require_relative "superbara/drivers/chrome"
-require_relative "superbara/drivers/chrome_headless"
-require_relative "superbara/drivers/chrome_remote"
+require_relative "superbara/chrome"
 
 trap "SIGINT" do
   puts "
@@ -28,6 +33,8 @@ control+c pressed, closing the browser..."
 
   exit 99
 end
+
+Superbara::Chrome.register_drivers
 
 require "chromedriver/helper"
 Chromedriver.set_version "2.37"

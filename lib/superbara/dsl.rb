@@ -3,6 +3,18 @@ module Superbara; module DSL
     puts "Superbara::DSL included in #{includer.inspect}"
   end
 
+  def atleast(range)
+    min = range.to_a.first
+    add = rand(range.to_a.last)
+    min+add
+  end
+  def think(range)
+    duration = atleast(range)
+
+    Superbara.puts "thinking #{duration}s"
+    sleep duration
+  end
+
   def wait(seconds, &block)
     def wait_formatted_output(status, took_delta)
       word, color = if status
