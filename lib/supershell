@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=$( cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P )
 
 Edit () {
   if [ "$EDITOR" != "" ]; then
@@ -25,7 +25,6 @@ Prompt () {
     case "$input" in
       ""|"restart"|"r")
         echo "starting.."
-        break
       ;;
       "edit"|"e")
         Edit $1
@@ -107,12 +106,10 @@ start testing with:
   "start")
     shift
     mode=workbench
-    break
   ;;
   "run")
     shift
     mode=single
-    break
   ;;
   *)
     Usage

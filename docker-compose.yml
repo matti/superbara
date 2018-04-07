@@ -2,7 +2,10 @@ version: '3.6'
 
 services:
   superbara:
-    build: .
+    build:
+      context: .
+      args:
+        version: "${VERSION}"
     image: mattipaksula/superbara
     command: e2e
     volumes:
