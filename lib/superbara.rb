@@ -13,6 +13,7 @@ require_relative "superbara/helpers"
 
 require_relative "superbara/drivers/chrome"
 require_relative "superbara/drivers/chrome_headless"
+require_relative "superbara/drivers/chrome_remote"
 
 trap "SIGINT" do
   puts "

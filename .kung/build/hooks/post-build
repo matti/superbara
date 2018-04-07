@@ -1,0 +1,9 @@
+export KUNG_FRONTEND=noninteractive KUNG_ENV=test
+kung rc chrome
+kung rc superbara
+kung stop chrome superbara
+
+kung rc chrome
+export CHROME_HOST=localhost CHROME_PORT=14444
+echo q | exe/superbara run e2e
+kung stop

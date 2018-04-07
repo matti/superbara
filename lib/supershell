@@ -20,6 +20,11 @@ Edit () {
 
 Prompt () {
   while true; do
+    if [ "$SUPERBARA_FRONTEND" = "noninteractive" ]; then
+      echo "non-interactive mode enabled"
+      break
+    fi
+
     printf "superbara $1 (enter or [r]estart, [e]dit, [q]uit) > "
     read input
     case "$input" in

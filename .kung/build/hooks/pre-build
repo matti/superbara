@@ -1,0 +1,2 @@
+rm superbara-*.gem
+gem build superbara.gemspec

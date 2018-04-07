@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  superbara:
+    build:
+      context: .
+      args:
+        version: "${VERSION}"
+    image: mattipaksula/superbara
