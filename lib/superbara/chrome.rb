@@ -26,10 +26,12 @@ module Superbara; module Chrome
     end
 
     Capybara.register_driver :chrome_remote do
+      chrome_url = ENV['CHROME_URL'] || "http://chrome:4444/wd/hub"
+
       Capybara::Selenium::Driver.new(nil,
         browser: :remote,
         desired_capabilities: capabilities,
-        url: "http://#{ENV['CHROME_HOST'] || 'chrome'}:#{ENV['CHROME_PORT'] || '4444'}/wd/hub"
+        url: chrome_url
       )
     end
 

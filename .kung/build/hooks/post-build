@@ -4,6 +4,6 @@ kung rc superbara
 kung stop chrome superbara
 
 kung rc chrome
-export CHROME_HOST=localhost CHROME_PORT=14444
+export CHROME_URL=http://localhost:14444/wd/hub
 echo q | exe/superbara run e2e
 kung stop

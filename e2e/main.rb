@@ -1,4 +1,4 @@
-if ENV["CHROME_HOST"]
+if ENV["CHROME_URL"]
   Capybara.default_driver = :chrome_remote
 end
 
