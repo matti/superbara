@@ -30,6 +30,7 @@ Prompt () {
     case "$input" in
       ""|"restart"|"r")
         echo "starting.."
+        break
       ;;
       "edit"|"e")
         Edit $1
