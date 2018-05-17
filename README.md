@@ -2,7 +2,7 @@
 
 Web app test scripting that does not hurt.
 
- - Based on Capybara: everything is just better and more natural
+ - Stands on the shoulders of [Capybara](https://github.com/teamcapybara/capybara/)
  - All batteries included: just start scripting, nothing extra required
  - A powerful command line interface with interactive debugger
  - The most natural test language that is still programming, see:
