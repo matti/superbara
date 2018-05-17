@@ -1,18 +1,42 @@
 require "pry-byebug"
 require "binding_of_caller"
 
-class Pry
-  class Command::Whereami < Pry::ClassCommand
-    alias_method :process_orig, :process
-    def process
-      if $supress_pry_whereami
-        $supress_pry_whereami = false
-        puts ""
-        nil
-      else
-        process_orig
+module Superbara
+  module PryMonkey
+    class Command
+      class Exit < Pry::ClassCommand
+        module Prepends
+          def process
+            Superbara.shell_disable!
+            Superbara.visual_disable!
+            super
+          end
+        end
+      end
+
+      class Whereami < Pry::ClassCommand
+        module Prepends
+          def process
+            if $__superbara_supress_pry_whereami
+              $__superbara_supress_pry_whereami = false
+              puts ""
+              nil
+            else
+              super
+            end
+          end
+        end
       end
     end
+  end
+end
+
+class Pry
+  class Command::Exit < Pry::ClassCommand
+    prepend ::Superbara::PryMonkey::Command::Exit::Prepends
+  end
+  class Command::Whereami < Pry::ClassCommand
+    prepend ::Superbara::PryMonkey::Command::Whereami::Prepends
   end
 end
 
@@ -47,26 +71,25 @@ Pry.commands.alias_command 'n', 'next'
 Pry.commands.alias_command 'h', 'help'
 
 Pry::Commands.command /^e$/, "edit" do
-  puts "Opening #{$superbara_current_file} ..."
-  begin
-    `superbara edit #{$superbara_current_file}`
-  rescue Exception => ex
-    puts "[development mode edit]"
-    `exe/superbara edit #{$superbara_current_file}`
-  end
+  puts "Opening #{Superbara.project_path} ..."
+  `superbara edit #{Superbara.project_path}`
 end
 
 Pry::Commands.command /^help$/, "help" do
-
   capybara_help_help = '''
-  e = find "h1", text: "Example Domain"
+  e = find "h1"
   e = find "h1", text: /xample Dom/
   e.click
 
   e = wait 2 do
-    find "p", text: "Added to the cart"
+    find "span", text: "Added to the cart"
   end
   e.click
+
+  think 2..4
+  scroll 50
+  scroll -10, duration: 4
+  focus
 
   more: https://github.com/teamcapybara/capybara#the-dsl'''
 
@@ -84,7 +107,7 @@ Pry::Commands.command /^q$/, "abort" do
 end
 
 Pry::Commands.command /^r$/, "retry" do
-  exit 2
+  _pry_.run_command "exit"
 end
 
 Pry::Commands.command /^$/, "repeat last command if stepping" do

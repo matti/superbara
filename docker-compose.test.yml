@@ -3,11 +3,11 @@ version: '3.6'
 services:
   superbara:
     image: mattipaksula/superbara
-    command: e2e
     environment:
       - SUPERBARA_FRONTEND=noninteractive
+      - CHROME_URL=http://chrome:4444/wd/hub
     volumes:
-      - ./e2e:/tests/e2e
+      - ./e2e:/e2e
     depends_on:
       - chrome
   chrome:

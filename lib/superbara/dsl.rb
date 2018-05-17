@@ -1,6 +1,102 @@
 module Superbara; module DSL
   def self.included(includer)
-    puts "Superbara::DSL included in #{includer.inspect}"
+    #"Superbara::DSL included in #{includer.inspect}"
+  end
+
+  def fail(message=nil)
+    if message
+      Superbara.output ("FAIL: ".colorize(:red) + message)
+    else
+      Superbara.output "FAIL: ".colorize(:red)
+    end
+
+    exit 1
+  end
+
+  def back
+    Superbara.toast("back", duration: 0.7, delay: 0.7)
+    Capybara.go_back
+  end
+
+  def forward
+    Superbara.toast("forward", duration: 0.7, delay: 0.7)
+    Capybara.go_forward
+  end
+
+  def reload
+    Superbara.toast("reload", duration: 0.7, delay: 0.7)
+    Capybara.refresh
+  end
+
+  def find(*args)
+    value = super *args
+    value&.show if Superbara.visual?
+    value
+  end
+
+  def find_text(text)
+    text.downcase!
+
+    js = """
+return Array.from(
+  document.querySelectorAll('*')
+).filter(function(e) {
+  return e.textContent.toLowerCase().match('#{text}') ? true : false
+}).pop()
+"""
+    element = page.execute_script js
+    element&.show if Superbara.visual?
+    element
+  end
+
+  def click_text(text)
+    find_text(text)&.click
+  end
+
+  def click(selector, options={})
+    Superbara.output "clicking '#{selector}' with #{options.inspect}"
+    e = find selector, options
+    e.click
+  end
+
+  @@once_runs = []
+  def run(what, once: false, &block)
+    if once
+      if @@once_runs.include? what
+        if block
+          value = block.call
+          return value
+        else
+          return false
+        end
+      else
+        @@once_runs << what
+      end
+    end
+
+    Superbara.output "run #{what}"
+    Superbara.toast "run #{what}" if Superbara.visual?
+
+    Superbara.current_context.__superbara_load(File.join(Superbara.project_path, "#{what}.rb"))
+  end
+
+  def visit(visit_uri_or_domain_or_path)
+    uri = ::Addressable::URI.parse(visit_uri_or_domain_or_path)
+    current_uri = ::Addressable::URI.parse(Capybara.current_url)
+
+    url_for_capybara = if visit_uri_or_domain_or_path.start_with? "/"
+      [current_uri.scheme, "://", current_uri.host, (current_uri.port ? ":#{current_uri.port}" : ""), visit_uri_or_domain_or_path].join("")
+    elsif ["http", "https", "about"].include? uri.scheme
+      visit_uri_or_domain_or_path
+    else
+      "http://#{visit_uri_or_domain_or_path}"
+    end
+
+    Superbara.output "visit #{url_for_capybara}"
+    Superbara.toast("#{url_for_capybara}", delay: 1) if Superbara.visual?
+
+    Capybara.visit url_for_capybara
+    true # capybara returns nil
   end
 
   def atleast(range)
@@ -8,11 +104,40 @@ module Superbara; module DSL
     add = rand(range.to_a.last)
     min+add
   end
+
   def think(range)
     duration = atleast(range)
 
-    Superbara.puts "thinking #{duration}s"
-    sleep duration
+    Superbara.output "think #{duration}s"
+    if Superbara.visual?
+      Superbara.toast "hmm...", delay: duration
+    else
+      sleep duration
+    end
+  end
+
+  @@focused_once = false
+  def focus(once: false)
+    if once
+      return false if @@focused_once
+      @@focused_once = true
+    end
+
+    Capybara.page.switch_to_window Capybara.current_window
+  end
+
+  def scroll(percentage, duration: 0.4)
+    outer_height = Capybara.current_session.current_window.session.execute_script "return document.body.scrollHeight"
+    scroll_y = outer_height / 100 * percentage
+
+    scrolls = (duration / 0.1).floor
+    amount = (scroll_y / scrolls).ceil
+    Superbara.output "scrolling #{percentage}%"
+    scrolls.times do
+      Capybara.current_session.current_window.session.execute_script "window.scrollBy(0,#{amount})"
+      sleep 0.09
+    end
+    true
   end
 
   def wait(seconds, &block)
@@ -23,13 +148,25 @@ module Superbara; module DSL
         ["FAIL", :red]
       end
 
-      puts "#{word.colorize(color)} (took #{(took_delta)}s)"
+      Superbara.output "  #{word.colorize(color)} (took #{(took_delta)}s)"
     end
     seconds = seconds.to_f
+    source_path, source_line = block.source_location
 
-    print "--> waiting max #{seconds}s "
+    Superbara.output "waiting max #{seconds}s for:"
+    case source_path
+    when "(pry)"
+      Superbara.output "    [dynamic code]".colorize(:light_black)
+    else
+      open(source_path).each_with_index do |line, i|
+        next if i < source_line
+        break if line.start_with? "end"
+        formatted_line = line.gsub("\n", "").lstrip
+        Superbara.output "  #{formatted_line}".colorize(:light_black)
+      end
+    end
+
     started_at = Time.now
-
     previous_capybara_default_max_wait_time = Capybara.default_max_wait_time
     block_value = nil
     exception = nil
@@ -37,7 +174,15 @@ module Superbara; module DSL
     begin
       Capybara.default_max_wait_time = seconds
       Timeout::timeout (seconds+0.1) do
-        block_value = block.call
+        loop do
+          block_value = block.call
+          case block_value
+          when false, nil
+            sleep 0.1
+          else
+            break
+          end
+        end
       end
     rescue Timeout::Error => ex
       timed_out = true
@@ -54,13 +199,19 @@ module Superbara; module DSL
       additional_started_at = Time.now
       additional_block_value = nil
       additional_exception = nil
+      previous_default_max_wait_time = Capybara.default_max_wait_time
       puts "  testing if waiting for 2 seconds more would help.."
       begin
-        Capybara.default_max_wait_time = 2
-        additional_block_value = block.call
+        Timeout::timeout(2.1) do
+          Capybara.default_max_wait_time = 2
+          additional_block_value = block.call
+        end
       rescue Exception => ex
         additional_exception = ex
+      ensure
+        Capybara.default_max_wait_time = previous_default_max_wait_time
       end
+
       additional_took_delta = (Time.now - additional_started_at).floor(2)
       suggested_wait_value = (seconds + additional_took_delta).floor(2)
 
@@ -91,8 +242,11 @@ module Superbara; module DSL
     return block_value
   end
 
-  def debug(exception_occurred:false)
+  def debug(exception_occurred:false, disable_whereami: false, help: true)
     return if ENV['SUPERBARA_FRONTEND'] == "noninteractive"
+    Superbara.shell_enable!
+    Superbara.visual_enable!
+
     debug_help = """
     c - continue to the next debug breakpoint
     s - step to the next line
@@ -103,15 +257,18 @@ module Superbara; module DSL
     debug_header_prefix = "== DEBUG "
     debug_header_suffix = "=" * (IO.console.winsize.last - debug_header_prefix.size)
 
-    puts """
+    if help
+      puts """
 #{debug_header_prefix}#{debug_header_suffix}
 #{debug_help}
 """.colorize(:light_green)
+    end
 
-    $supress_pry_whereami = true if exception_occurred
+    $__superbara_supress_pry_whereami = true if exception_occurred || disable_whereami
     Pry.start(binding.of_caller(1))
   end
 end; end
 
-include Superbara::DSL
 include Capybara::DSL
+include Superbara::DSL  # override Capybara methods
+

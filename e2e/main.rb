@@ -1,8 +1,17 @@
-if ENV["CHROME_URL"]
-  Capybara.default_driver = :chrome_remote
+run "init", once: true
+run "vars"
+
+visit "#{$test_host}:4567"
+wait "3" do
+  has_text? "Superbara"
 end
 
-visit "http://www.example.com"
+run "wait"
+run "prompt"
+run "type"
 
-h1 = find "h1"
-h1.highlight
+run "example", once: true do
+  visit "example.com"
+end
+
+find "h1"

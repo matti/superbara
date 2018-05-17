@@ -1,9 +1,2 @@
-export KUNG_FRONTEND=noninteractive KUNG_ENV=test
-kung rc chrome
-kung rc superbara
-kung stop chrome superbara
-
-kung rc chrome
-export CHROME_URL=http://localhost:14444/wd/hub
-echo q | exe/superbara run e2e
-kung stop
+KUNG_ENV=test KUNG_FRONTEND=noninteractive kung rc chrome
+KUNG_ENV=test kung rc superbara

@@ -14,12 +14,16 @@ module Superbara; module Chrome
     options.add_argument 'disable-infobars'
 
     capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-      pageLoadStrategy: @@page_load_strategy
+      pageLoadStrategy: @@page_load_strategy,
     )
+
+    client = Selenium::WebDriver::Remote::Http::Default.new
+    client.read_timeout = 10
 
     Capybara.register_driver :chrome do
       Capybara::Selenium::Driver.new(nil,
         browser: :chrome,
+        http_client: client,
         options: options,
         desired_capabilities: capabilities
       )
@@ -30,6 +34,7 @@ module Superbara; module Chrome
 
       Capybara::Selenium::Driver.new(nil,
         browser: :remote,
+        http_client: client,
         desired_capabilities: capabilities,
         url: chrome_url
       )
@@ -40,12 +45,10 @@ module Superbara; module Chrome
 
       Capybara::Selenium::Driver.new(nil,
         browser: :chrome,
+        http_client: client,
         desired_capabilities: capabilities,
         options: options
       )
     end
-
-    Superbara.puts "registered drivers"
-    Superbara.puts capabilities.inspect
   end
 end; end

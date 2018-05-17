@@ -9,7 +9,8 @@ RSpec.configure do |config|
   config.fail_fast = true
 
   config.before(:each) do |example|
-    $superbara_current_file = example.metadata[:example_group][:file_path]
+    #TODO
+    #$superbara_current_file = example.metadata[:example_group][:file_path]
 
     puts ""
     class_path = example.example_group_instance.class.to_s.split("::")
