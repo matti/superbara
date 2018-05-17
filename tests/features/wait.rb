@@ -1,6 +1,10 @@
+run "../common"
+
 visit "/__superbara/wait"
 
-fail if has_text? "500ms"
+assert do
+  has_no_text? "500ms"
+end
 
 wait 0.8 do
   has_text? "500ms"

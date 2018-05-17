@@ -22,7 +22,7 @@ name_field.type "Sarah", :enter
 if has_text? "Welcome, Sarah"
   run "logout"
 else
-  fail "no greeting visible"
+  assert "no greeting visible"
 end
 ```
 

@@ -1,7 +1,11 @@
+run "../common"
+
 visit "/__superbara/prompt"
 
 message = accept_prompt with: 'Linda Liukas' do
   click_link 'Author Quiz!'
 end
 
-fail unless message == 'Who is the author of Hello Ruby?'
+assert message do
+  message == 'Who is the author of Hello Ruby?'
+end

@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.15', '>= 1.15.0'
   spec.add_development_dependency 'rake', '~> 10.0', '>= 10.0.0'
   spec.add_development_dependency 'rspec', '~> 3.7', '>= 3.7.0'
+  spec.add_development_dependency 'kommando', '~> 0.1', '>= 0.1.2'
 end

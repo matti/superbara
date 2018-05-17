@@ -3,7 +3,15 @@ module Superbara; module DSL
     #"Superbara::DSL included in #{includer.inspect}"
   end
 
-  def fail(message=nil)
+  def assert(message=nil, &block)
+    failed = if block
+      !block.call
+    else
+      true
+    end
+
+    return unless failed
+
     if message
       Superbara.output ("FAIL: ".colorize(:red) + message)
     else
@@ -73,11 +81,25 @@ return Array.from(
         @@once_runs << what
       end
     end
-
     Superbara.output "run #{what}"
     Superbara.toast "run #{what}" if Superbara.visual?
 
-    Superbara.current_context.__superbara_load(File.join(Superbara.project_path, "#{what}.rb"))
+    what_expanded = File.expand_path(File.join(Superbara.project_path, what))
+    better_what = if Dir.exist? what_expanded
+      File.join what_expanded, "main.rb"
+    elsif what_expanded.end_with? ".rb"
+      what_expanded
+    else
+      "#{what_expanded}.rb"
+    end
+
+    old_project_path = Superbara.project_path
+    unless Superbara.project_path == File.dirname(better_what)
+      Superbara.project_path = File.dirname(better_what)
+    end
+
+    Superbara.current_context.__superbara_load(better_what)
+    Superbara.project_path = old_project_path
   end
 
   def visit(visit_uri_or_domain_or_path)
@@ -255,7 +277,7 @@ return Array.from(
     q - exit to shell"""
 
     debug_header_prefix = "== DEBUG "
-    debug_header_suffix = "=" * (IO.console.winsize.last - debug_header_prefix.size)
+    debug_header_suffix = "=" * (IO.console.winsize.last - debug_header_prefix.size).abs
 
     if help
       puts """

@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+set -e
+tests="all minimal"
+
+for test in $tests; do
+  set +e
+    exe/superbara run tests/$test
+    exit_status=$?
+  set -e
+
+  if [ "$exit_status" != 0 ]; then
+    echo "err!"
+    exit 1
+  fi
+done
+
+set +e
+  exe/superbara run tests/fail
+  exit_status=$?
+set -e
+
+if [ "$exit_status" != 1 ]; then
+  echo "err!"
+  exit 1
+fi
+
+echo "success!"

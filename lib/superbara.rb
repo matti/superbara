@@ -46,6 +46,25 @@ module Superbara
     return true if ENV["SUPERBARA_VISUAL"]
   end
 
+  def self.visual_disabled(&block)
+    env_was_set = if ENV["SUPERBARA_VISUAL"]
+      ENV.delete "SUPERBARA_VISUAL"
+      true
+    end
+
+    visual_was_set = if Superbara.visual?
+      self.visual_disable!
+      true
+    end
+
+    value = block.call
+
+    ENV["SUPERBARA_VISUAL"] = "true" if env_was_set
+    Superbara.visual_enable! if visual_was_set
+
+    value
+  end
+
   def self.visual_enable!
     @@visual = true
   end

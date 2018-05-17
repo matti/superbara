@@ -3,7 +3,6 @@ set -e
 version=$(exe/superbara version)
 
 rake
-SUPERBARA_FRONTEND=noninteractive exe/superbara run e2e
 
 gem build superbara.gemspec
 KUNG_ENV=build VERSION=$version kung build

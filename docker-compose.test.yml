@@ -7,7 +7,7 @@ services:
       - SUPERBARA_FRONTEND=noninteractive
       - CHROME_URL=http://chrome:4444/wd/hub
     volumes:
-      - ./e2e:/e2e
+      - ./tests:/tests
     depends_on:
       - chrome
   chrome:

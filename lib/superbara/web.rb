@@ -1,7 +1,7 @@
 require 'sinatra/base'
 
 module Superbara; class Web
-  def initialize(access_log: true, server_bind: '127.0.0.1')
+  def initialize(access_log: true, server_bind: '127.0.0.1', port: 4567)
     @webapp = Sinatra.new do
       root_path = File.join(File.dirname(__FILE__), "..", "..", "web")
 
@@ -11,6 +11,7 @@ module Superbara; class Web
 
       set :bind, server_bind
       set :root, root_path
+      set :port, port
 
       get '/' do
         File.read(File.join(root_path,"public", "index.html"))

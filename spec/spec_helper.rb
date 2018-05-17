@@ -2,6 +2,8 @@ require "bundler/setup"
 require "superbara"
 require "superbara/rspec"
 
+require 'kommando'
+
 RSpec.configure do |config|
   config.fail_fast = true
 
@@ -14,4 +16,20 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+end
+
+def kommando_maker(cmd, opts={})
+  k = Kommando.new cmd, {
+    output: true,
+    timeout: 10
+  }.merge(opts)
+
+  k.when :timeout do
+    puts "TIMED OUT, killing process"
+    Process.kill "INT", Process.pid
+    sleep 2
+    assert "timed out"
+  end
+
+  k
 end

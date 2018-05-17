@@ -71,8 +71,8 @@ Pry.commands.alias_command 'n', 'next'
 Pry.commands.alias_command 'h', 'help'
 
 Pry::Commands.command /^e$/, "edit" do
-  puts "Opening #{Superbara.project_path} ..."
-  `superbara edit #{Superbara.project_path}`
+  output = `superbara edit #{Superbara.project_path}`
+  puts output
 end
 
 Pry::Commands.command /^help$/, "help" do
