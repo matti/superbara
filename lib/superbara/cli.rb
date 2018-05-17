@@ -65,50 +65,50 @@ scroll 50
     loop do
       Superbara.current_context = Superbara::Context.new(shell: (main_command == "shell"))
 
-      case main_command
-      when "web"
-        webapp = Superbara::Web.new
-        webapp.run!
-        exit 0
-      when "shell"
-        Superbara.visual_enable!
-        Superbara.shell_enable!
-        Superbara::Chrome.page_load_strategy = "none"
-
-        unless webapp_thread
-          webapp_thread = Thread.new do
-            webapp = Superbara::Web.new access_log: false
-            webapp.run!
-          end
-        end
-
-        Superbara.current_context.__superbara_eval "visit 'localhost:4567'"
-        Superbara.current_context.__superbara_debug
-      when "run", "start"
-        puts "project: #{Superbara.project_name}"
-        puts ""
-        puts "t      action".colorize(:light_black)
-        Superbara.start!
-        Superbara.visual_disable!
-        Superbara.current_context.__superbara_eval "visit 'about:blank'"
-        Superbara.visual_enable!
-
-        Superbara.current_context.__superbara_load(File.join(Superbara.project_path, "main.rb"))
-
-        puts """
-🏁 🏁 🏁 done."""
-
+      begin
         case main_command
-        when "run"
+        when "web"
+          webapp = Superbara::Web.new
+          webapp.run!
           exit 0
-        when "start"
-          Superbara.current_context.__superbara_debug
-        end
-      else
-        puts "Unknown command: #{main_command}"
-        exit 1
-      end
+        when "shell"
+          Superbara.visual_enable!
+          Superbara.shell_enable!
+          Superbara::Chrome.page_load_strategy = "none"
 
+          unless webapp_thread
+            webapp_thread = Thread.new do
+              webapp = Superbara::Web.new access_log: false
+              webapp.run!
+            end
+          end
+
+          Superbara.current_context.__superbara_eval "visit 'localhost:4567'"
+          Superbara.current_context.__superbara_debug
+        when "run", "start"
+          puts "project: #{Superbara.project_name}"
+          puts ""
+          puts "t      action".colorize(:light_black)
+          Superbara.start!
+          Superbara.visual_disable!
+          Superbara.current_context.__superbara_eval "visit 'about:blank'"
+          Superbara.visual_enable!
+
+          Superbara.current_context.__superbara_load(File.join(Superbara.project_path, "main.rb"))
+
+          puts """
+  🏁 🏁 🏁 done."""
+
+          case main_command
+          when "run"
+            exit 0
+          when "start"
+            Superbara.current_context.__superbara_debug
+          end
+        else
+          puts "Unknown command: #{main_command}"
+          exit 1
+        end
       rescue Exception => ex
         return if ex.class == SystemExit
 
@@ -127,6 +127,7 @@ in #{offending_file_path}:#{offending_line}
 #{offending_line}: #{offending_code}""".colorize(:light_black)
 
         Superbara.current_context.__superbara_debug
+      end
     end
   end
 end; end
