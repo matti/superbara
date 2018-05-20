@@ -120,6 +120,12 @@ __superbaraToastContainerElem.style.width = '100%';
 __superbaraToastContainerElem.style.backgroundColor = 'rgba(0,0,0,0.80)';
 __superbaraToastContainerElem.style.display = 'table';
 __superbaraToastContainerElem.style.zIndex = '99999999999';
+__superbaraToastContainerElem.style.margin = '0';
+__superbaraToastContainerElem.style.padding = '0';
+__superbaraToastContainerElem.style.border = '0';
+__superbaraToastContainerElem.style.borderRadius = '0';
+__superbaraToastContainerElem.style.fontSize = '100%';
+__superbaraToastContainerElem.style.verticalAlign = 'middle';
 
 var __superbaraToastTextElem = document.createElement('p');
 __superbaraToastTextElem.style.display = 'table-cell';
