@@ -9,6 +9,9 @@ module Superbara; module Chrome
   end
 
   def self.register_drivers
+    chromedriver_path = File.join(Superbara.path, "vendor", "chromedriver", Superbara.platform, "chromedriver")
+    chromedriver_path = "#{chromedriver_path}.exe" if Superbara.platform == "win32"
+
     options = ::Selenium::WebDriver::Chrome::Options.new
     options.add_argument 'window-size=1680,1024'
     options.add_argument 'disable-infobars'
@@ -22,6 +25,7 @@ module Superbara; module Chrome
 
     Capybara.register_driver :chrome do
       Capybara::Selenium::Driver.new(nil,
+        driver_path: chromedriver_path,
         browser: :chrome,
         http_client: client,
         options: options,
@@ -44,6 +48,7 @@ module Superbara; module Chrome
       options.add_argument 'disable-gpu'
 
       Capybara::Selenium::Driver.new(nil,
+        driver_path: chromedriver_path,
         browser: :chrome,
         http_client: client,
         desired_capabilities: capabilities,

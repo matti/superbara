@@ -101,6 +101,31 @@ module Superbara
     File.basename(@@project_path)
   end
 
+  def self.path
+    File.join(File.dirname(__FILE__), "..")
+  end
+
+  def self.platform
+    require 'rbconfig'
+    cfg = RbConfig::CONFIG
+    host_cpu = cfg["host_cpu"]
+    host_os = cfg["host_os"]
+
+    platform = case host_os
+    when /linux/ then
+      if host_cpu =~ /x86_64|amd64/
+        "linux64"
+      else
+        raise "32bit not supported"
+      end
+    when /darwin/ then "mac64"
+    when /mswin/ then "win32"
+    when /mingw/ then "win32"
+    else
+      raise "Unsupported host OS '#{host_os}'"
+    end
+  end
+
   def self.toast(text, duration: 1, delay: 0)
     return unless Superbara.visual?
 
@@ -176,9 +201,6 @@ control+c pressed, closing the browser..."
 end
 
 Superbara::Chrome.register_drivers
-
-require "chromedriver/helper"
-Chromedriver.set_version "2.37"
 
 Capybara.default_driver = if ENV["CHROME_URL"]
   :chrome_remote

@@ -1,9 +1,25 @@
 #!/usr/bin/env sh
 set -e
 version=$(exe/superbara version)
+chromedriver_version=2.38
+
+gem uninstall -a superbara
+
+cd vendor/chromedriver
+  for chromedriver_platform in mac64 win32 linux64; do
+    cd $chromedriver_platform
+      curl -O https://chromedriver.storage.googleapis.com/${chromedriver_version}/chromedriver_${chromedriver_platform}.zip
+      unzip -o chromedriver_${chromedriver_platform}.zip
+      rm chromedriver_${chromedriver_platform}.zip
+    cd ..
+  done
+cd ../..
 
 rake
 
 gem build superbara.gemspec
 KUNG_ENV=build VERSION=$version kung build
+
 rake release
+
+rubyc -c --gem=superbara --gem-version=${version} superbara

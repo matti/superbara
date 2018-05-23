@@ -17,6 +17,8 @@ Gem::Specification.new do |spec|
   spec.files         = `if [ -d '.git' ]; then git ls-files -z; fi`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
+  spec.files += Dir['vendor/**/*']
+
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -26,7 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'binding_of_caller', '~> 0.8', '>=0.8.0'
   spec.add_dependency 'capybara', '~> 3.1', '>= 3.1.0'
   spec.add_dependency 'selenium-webdriver', '~> 3.12', '>= 3.12.0'
-  spec.add_dependency 'chromedriver-helper', '~> 1.2.0', '>= 1.2.0'
   spec.add_dependency 'faker', '~> 1.8', '>= 1.8.7'
   spec.add_dependency 'sinatra', '~> 2.0', '>= 2.0.1'
   spec.add_development_dependency 'bundler', '~> 1.15', '>= 1.15.0'
