@@ -2,6 +2,8 @@
 
 Web app test scripting that does not hurt.
 
+![Demo of Superbara](demo.gif)
+
  - Stands on the shoulders of [Capybara](https://github.com/teamcapybara/capybara/)
  - All batteries included: just start scripting, nothing extra required
  - A powerful command line interface with interactive debugger
