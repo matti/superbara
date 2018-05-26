@@ -21,6 +21,19 @@ module Superbara; module DSL
     exit 1
   end
 
+  def screenshot(name=nil)
+    name = "#{Time.now.year}-#{Time.now.month}-#{Time.now.day}-#{Time.now.hour}-#{Time.now.min}-#{Time.now.sec}" unless name
+
+    filename = if name.end_with? ".png"
+      name
+    else
+      "#{name}.png"
+    end
+
+    target_path = File.join(Superbara.project_path, filename)
+    save_screenshot(target_path)
+  end
+
   def back
     Superbara.toast("back", duration: 0.7, delay: 0.7)
     Capybara.go_back

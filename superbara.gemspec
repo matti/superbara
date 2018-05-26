@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'selenium-webdriver', '~> 3.12', '>= 3.12.0'
   spec.add_dependency 'faker', '~> 1.8', '>= 1.8.7'
   spec.add_dependency 'sinatra', '~> 2.0', '>= 2.0.1'
+
   spec.add_development_dependency 'bundler', '~> 1.15', '>= 1.15.0'
   spec.add_development_dependency 'rake', '~> 10.0', '>= 10.0.0'
   spec.add_development_dependency 'rspec', '~> 3.7', '>= 3.7.0'
