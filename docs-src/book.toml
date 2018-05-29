@@ -6,3 +6,6 @@ title = "Superbara"
 
 [output.html]
 no-section-label = true
+
+[build]
+build-dir = "../docs"
