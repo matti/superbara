@@ -1,0 +1,8 @@
+[book]
+authors = ["Matti Paksula"]
+multilingual = false
+src = "src"
+title = "Superbara"
+
+[output.html]
+no-section-label = true
