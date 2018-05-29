@@ -37,6 +37,10 @@ superbara start example
 superbara usage
 ```
 
+## Documentation
+
+See (https://matti.github.io/superbara)[https://matti.github.io/superbara/index.html] for getting started and language reference.
+
 ## Some things that Superbara does that Capybara does not:
 
 ```ruby
