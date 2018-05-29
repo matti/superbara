@@ -39,7 +39,7 @@ superbara usage
 
 ## Documentation
 
-See (https://matti.github.io/superbara)[https://matti.github.io/superbara/index.html] for getting started and language reference.
+See [https://matti.github.io/superbara](https://matti.github.io/superbara/index.html) for getting started and language reference.
 
 ## Some things that Superbara does that Capybara does not:
 
