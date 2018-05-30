@@ -47,8 +47,6 @@ wait 3 do
   has_text? 'Example Domain'
 end
 
-think 1..3
-
 click 'a'
 scroll 50
 """
@@ -77,6 +75,18 @@ scroll 50
       end
     end
 
+    target_path = File.expand_path '~/.superbara'
+    target = File.join target_path, "chromedriver"
+    from = File.join Superbara.path, "vendor", "chromedriver", Superbara.platform, "chromedriver"
+    if Superbara.platform == "win32"
+      from << ".exe"
+      target << ".exe"
+    end
+
+    File.unlink target if File.exist? target
+    FileUtils.mkdir_p target_path
+    FileUtils.cp from, target
+
     case main_command
     when "start", "run"
       project_path_or_file_expanded = File.expand_path(ARGV[1])
@@ -98,6 +108,7 @@ scroll 50
         exit 1
       end
     end
+
     Pry.start if ENV['SUPERBARA_DEBUG']
     ctx = nil
     webapp_thread = nil
@@ -114,7 +125,6 @@ scroll 50
         when "shell"
           Superbara.visual_enable!
           Superbara.shell_enable!
-          Superbara::Chrome.page_load_strategy = "none"
 
           unless webapp_thread
             webapp_thread = Thread.new do
@@ -132,6 +142,7 @@ scroll 50
           puts "project: #{Superbara.project_name}"
           puts ""
           puts "t      action".colorize(:light_black)
+
           Superbara.start!
           Superbara.visual_disabled do
             Superbara.current_context.__superbara_eval "visit 'about:blank'"

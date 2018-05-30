@@ -111,6 +111,12 @@ module Superbara
     sleep (rand(32) * 0.01).round(2)
   end
 
+  def self.chromedriver_path
+    path = File.join(File.expand_path('~'), ".superbara", "chromedriver")
+    path << ".exe" if Superbara.platform == "win32"
+    path
+  end
+
   def self.platform
     require 'rbconfig'
     cfg = RbConfig::CONFIG
@@ -210,7 +216,7 @@ control+c pressed, closing the browser..."
   end
 end
 
-Superbara::Chrome.register_drivers
+Superbara::Chrome.page_load_strategy = "none"
 
 Capybara.default_driver = if ENV["CHROME_URL"]
   :chrome_remote

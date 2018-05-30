@@ -7,6 +7,9 @@ RSpec.describe Superbara do
 
       it "loads" do
         visit "http://www.example.com"
+        wait 5 do
+          has_text? "Example Domain"
+        end
         expect(page).to have_content "Example Domain"
       end
 

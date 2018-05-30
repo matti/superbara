@@ -35,6 +35,8 @@ module Superbara; module DSL
     end
 
     target_path = File.join(Superbara.project_path, filename)
+
+    sleep 0.1 #magically prevents hangs
     save_screenshot(target_path)
   end
 
@@ -166,7 +168,13 @@ return Array.from(
   end
 
   def scroll(percentage, duration: 0.4)
-    outer_height = Capybara.current_session.current_window.session.execute_script "return document.body.scrollHeight"
+    begin
+      outer_height = Capybara.current_session.current_window.session.execute_script "return document.body.scrollHeight"
+    rescue Selenium::WebDriver::Error::UnknownError => ex
+      sleep 0.1
+      retry
+    end
+
     scroll_y = outer_height / 100 * percentage
 
     scrolls = (duration / 0.1).floor
