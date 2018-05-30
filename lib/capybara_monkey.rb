@@ -3,12 +3,8 @@ module Superbara
     module Node
       class Element
         module Includes
-          def type(*text)
-            self.native.type(*text)
-          end
-
           def show(styles: nil, remove_highlight: 0.1)
-            execute_script "scrollTo(#{self.native.location.x}, #{self.native.location.y-200})"
+            Capybara.execute_script "scrollTo(#{self.native.location.x}, #{self.native.location.y-200})"
             styles = [
                 {
                   "border" =>  "20px dashed Aqua"
@@ -24,6 +20,11 @@ module Superbara
 
             self
           end
+
+          def type(*inputs)
+            self.native.type(*inputs)
+          end
+
         end #Includes
 
         module Prepends
@@ -123,6 +124,10 @@ module Capybara
   module DSL
     def self.included(base)
       #warn "including Capybara::DSL in the global scope is not recommended!" if base == Object
+      #super
+    end
+    def self.extended(base)
+      #warn "extending the main object with Capybara::DSL is not recommended!" if base == Object
       #super
     end
   end

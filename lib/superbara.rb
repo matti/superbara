@@ -19,6 +19,7 @@ module Superbara
   @@current_context = nil
   @@visual = false
   @@started_at = Time.now
+  @@project_path = Dir.pwd
 
   def self.start!
     @@started_at = Time.now
@@ -105,6 +106,11 @@ module Superbara
     File.join(File.dirname(__FILE__), "..")
   end
 
+  def self.human_typing_delay
+    return unless ENV["SUPERBARA_HUMANIZE"]
+    sleep (rand(32) * 0.01).round(2)
+  end
+
   def self.platform
     require 'rbconfig'
     cfg = RbConfig::CONFIG
@@ -126,7 +132,7 @@ module Superbara
     end
   end
 
-  def self.toast(text, duration: 1, delay: 0)
+  def self.toast(text, duration: 1, delay: nil)
     return unless Superbara.visual?
 
     duration_millis = (duration * 1000).floor
@@ -177,7 +183,11 @@ setTimeout(function() {
 }, #{duration_millis});
 """
     Capybara.current_session.current_window.session.execute_script js
-    sleep delay
+    if delay
+      sleep delay
+    else
+      sleep duration
+    end
   end
 end
 

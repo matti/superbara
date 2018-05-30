@@ -1,11 +1,10 @@
 module Superbara; class Context
+  require_relative "dsl"
+  include Capybara::DSL
+  include Superbara::DSL
 
-  def initialize(shell: false)
-    @__superbara_shell = shell
+  def initialize
     @__superbara_binding = binding
-    @__superbara_binding.eval """
-require 'superbara/dsl'
-"""
   end
 
   def __superbara_debug
@@ -16,7 +15,7 @@ sleep 0.0001
   end
 
   def __superbara_load(path)
-    load path
+    load path, true
   end
 
   def __superbara_eval(str)

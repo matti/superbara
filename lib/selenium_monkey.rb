@@ -4,23 +4,8 @@ module Superbara
       class Element
         module Includes
           def type(*inputs)
-            def natural_delay
-              sleep (rand(32) * 0.01).round(2)
-            end
-
-            for input in inputs
-              case input
-              when String
-                input.split("").each do |c|
-                  natural_delay
-                  self.send_keys c
-                end
-              when Symbol
-                natural_delay
-                self.send_keys input
-              end
-            end
-            true
+            self.click
+            Superbara::Helpers.type *inputs, element: self
           end
 
           def show(opts={})

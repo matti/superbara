@@ -1,5 +1,6 @@
 module Superbara; module CLI
   def self.run!
+    require 'superbara/dsl'
     main_command = ARGV[0]
 
     case main_command
@@ -97,12 +98,12 @@ scroll 50
         exit 1
       end
     end
-
+    Pry.start if ENV['SUPERBARA_DEBUG']
     ctx = nil
     webapp_thread = nil
     puts "== superbara #{Superbara::VERSION} =="
     loop do
-      Superbara.current_context = Superbara::Context.new(shell: (main_command == "shell"))
+      Superbara.current_context = Superbara::Context.new
 
       begin
         case main_command
@@ -121,9 +122,12 @@ scroll 50
               webapp.run!
             end
           end
-
+          # to make debugger work (TODO)
+          extend Capybara::DSL
+          extend Superbara::DSL
           Superbara.current_context.__superbara_eval "visit 'localhost:4567'"
-          Superbara.current_context.__superbara_debug
+          Superbara.current_context.__superbara_debug # <-- ONLY WORKS WITH THIS??? TODO
+          exit 0
         when "run", "start"
           puts "project: #{Superbara.project_name}"
           puts ""
@@ -138,8 +142,7 @@ scroll 50
             Superbara.visual_enable!
           end
 
-          Superbara.current_context.__superbara_load(File.join(Superbara.project_path, project_entrypoint))
-
+          Superbara.current_context.__superbara_load File.join(Superbara.project_path, project_entrypoint)
           puts """
   🏁 🏁 🏁 done."""
 
@@ -147,7 +150,10 @@ scroll 50
           when "run"
             exit 0
           when "start"
-            Superbara.current_context.__superbara_debug
+            Superbara.current_context.__superbara_eval """
+debug disable_whereami: true, help: false;
+sleep 0.0001
+            """
           end
         else
           puts "Unknown command: #{main_command}"
@@ -172,7 +178,9 @@ in #{offending_file_path}:#{offending_line}
 
         case main_command
         when "start"
-          Superbara.current_context.__superbara_debug
+          Superbara.current_context.instance_eval  """debug disable_whereami: true, help: false
+sleep 0.001
+"""
         else
           exit 1
         end

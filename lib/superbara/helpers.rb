@@ -1,4 +1,27 @@
 module Superbara; module Helpers
+  def self.type(*inputs, element:nil)
+    for input in inputs
+      case input
+      when String
+        if input == "" && element
+          element.clear
+        else
+          input.split("").each do |c|
+            Superbara.human_typing_delay
+            Capybara.page.driver.browser.action.send_keys(c).perform
+          end
+        end
+      when Symbol
+        Superbara.human_typing_delay
+        Capybara.page.driver.browser.action.send_keys(input).perform
+      end
+
+      sleep 0.5 # without this events might not get sent properly
+    end
+
+    true
+  end
+
   def self.highlight_element(elem, styles={}, remove_highlight=0.1)
     remove_highlight_millis = (1000 * remove_highlight).round
 
@@ -49,7 +72,7 @@ window.setTimeout(function() {
       js_builder
     end
 
-    execute_script js
+    Capybara.execute_script js
     sleep remove_highlight
   end
 end; end

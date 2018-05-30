@@ -1,6 +1,10 @@
 module Superbara; module DSL
   def self.included(includer)
-    #"Superbara::DSL included in #{includer.inspect}"
+    #puts "Superbara::DSL included in #{includer.inspect}"
+  end
+
+  def type(*inputs)
+    Superbara::Helpers.type *inputs
   end
 
   def assert(message=nil, &block)
@@ -35,17 +39,17 @@ module Superbara; module DSL
   end
 
   def back
-    Superbara.toast("back", duration: 0.7, delay: 0.7)
+    Superbara.toast "back", duration: 0.7, delay: 0
     Capybara.go_back
   end
 
   def forward
-    Superbara.toast("forward", duration: 0.7, delay: 0.7)
+    Superbara.toast "forward", duration: 0.7, delay: 0
     Capybara.go_forward
   end
 
   def reload
-    Superbara.toast("reload", duration: 0.7, delay: 0.7)
+    Superbara.toast "reload", duration: 0.7, delay: 0
     Capybara.refresh
   end
 
@@ -128,7 +132,7 @@ return Array.from(
     end
 
     Superbara.output "visit #{url_for_capybara}"
-    Superbara.toast("#{url_for_capybara}", delay: 1) if Superbara.visual?
+    Superbara.toast "#{url_for_capybara}", delay: 1 if Superbara.visual?
 
     Capybara.visit url_for_capybara
     true # capybara returns nil
@@ -185,6 +189,7 @@ return Array.from(
 
       Superbara.output "  #{word.colorize(color)} (took #{(took_delta)}s)"
     end
+
     seconds = seconds.to_f
     source_path, source_line = block.source_location
 
@@ -304,6 +309,5 @@ return Array.from(
   end
 end; end
 
-include Capybara::DSL
-include Superbara::DSL  # override Capybara methods
-
+extend Capybara::DSL
+extend Superbara::DSL  # override Capybara methods

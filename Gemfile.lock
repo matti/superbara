@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    superbara (0.7.0)
+    superbara (0.8.0)
       binding_of_caller (~> 0.8, >= 0.8.0)
       capybara (~> 3.1, >= 3.1.0)
       colorize (~> 0.8, >= 0.8.1)
@@ -18,7 +18,7 @@ GEM
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     byebug (10.0.2)
-    capybara (3.1.0)
+    capybara (3.1.1)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -80,7 +80,7 @@ GEM
       rack-protection (= 2.0.1)
       tilt (~> 2.0)
     tilt (2.0.8)
-    xpath (3.0.0)
+    xpath (3.1.0)
       nokogiri (~> 1.8)
 
 PLATFORMS
