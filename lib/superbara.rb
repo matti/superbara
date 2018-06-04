@@ -178,15 +178,18 @@ __superbaraToastTextElem.style.color = 'white';
 __superbaraToastTextElem.textContent = '#{text}';
 
 __superbaraToastContainerElem.appendChild(__superbaraToastTextElem);
-window.document.body.appendChild(__superbaraToastContainerElem);
 
-setTimeout(function() {
-  //__superbaraToastContainerElem.remove();
-  __superbaraToastContainerElem.style.visibility = 'hidden';
-  __superbaraToastContainerElem.style.opacity = 0;
-  __superbaraToastContainerElem.style.transition = 'visibility 0s 0.25s, opacity 0.25s linear';
- // delete(window.__superbaraToastContainerElem);
-}, #{duration_millis});
+if (window.document.body) {
+  window.document.body.appendChild(__superbaraToastContainerElem);
+
+  setTimeout(function() {
+    //__superbaraToastContainerElem.remove();
+    __superbaraToastContainerElem.style.visibility = 'hidden';
+    __superbaraToastContainerElem.style.opacity = 0;
+    __superbaraToastContainerElem.style.transition = 'visibility 0s 0.25s, opacity 0.25s linear';
+  // delete(window.__superbaraToastContainerElem);
+  }, #{duration_millis});
+}
 """
     Capybara.current_session.current_window.session.execute_script js
     if delay

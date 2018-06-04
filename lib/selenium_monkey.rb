@@ -9,7 +9,7 @@ module Superbara
           end
 
           def show(opts={})
-            execute_script "scrollTo(#{self.location.x}, #{self.location.y-200})"
+            Capybara.execute_script "scrollTo(#{self.location.x}, #{self.location.y-200})"
             Superbara::Helpers.highlight_element(self)
           end
         end

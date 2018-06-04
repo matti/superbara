@@ -71,7 +71,7 @@ return Array.from(
   return e.textContent.toLowerCase().match('#{text}') ? true : false
 }).pop()
 """
-    element = page.execute_script js
+    element = Capybara.execute_script js
     element&.show if Superbara.visual?
     element
   end
@@ -137,6 +137,7 @@ return Array.from(
     Superbara.toast "#{url_for_capybara}", delay: 1 if Superbara.visual?
 
     Capybara.visit url_for_capybara
+
     true # capybara returns nil
   end
 
@@ -187,7 +188,7 @@ return Array.from(
     true
   end
 
-  def wait(seconds, &block)
+  def wait(seconds=5, &block)
     def wait_formatted_output(status, took_delta)
       word, color = if status
         ["ok", :green]
@@ -225,7 +226,7 @@ return Array.from(
         loop do
           block_value = block.call
           case block_value
-          when false, nil
+          when false, nil, []
             sleep 0.1
           else
             break

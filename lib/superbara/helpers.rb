@@ -49,6 +49,10 @@ __superbara.getElementByXpath = function(path) {
 return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 };
 window.__superbara.highlightElem = window.__superbara.getElementByXpath('#{elem.path}');
+if (!window.__superbara.highlightElem) {
+  return;
+}
+
 window.__superbara.highlightElem.oldStyle = {};
 """
       styles.each_pair do |k,v|
