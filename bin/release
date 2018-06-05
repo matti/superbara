@@ -21,5 +21,3 @@ gem build superbara.gemspec
 KUNG_ENV=build VERSION=$version kung build
 
 rake release
-
-rubyc -c --gem=superbara --gem-version=${version} superbara

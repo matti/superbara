@@ -13,6 +13,8 @@ require_relative "pry_monkey"
 
 ::Kernel.send :undef_method, :p
 
+require_relative "superbara/config"
+
 module Superbara
   @@project_name = nil
   @@shell = false
@@ -20,6 +22,8 @@ module Superbara
   @@visual = false
   @@started_at = Time.now
   @@project_path = Dir.pwd
+  @@config = Superbara::Config.new
+  @@errored_runs = []
 
   def self.start!
     @@started_at = Time.now
@@ -138,6 +142,14 @@ module Superbara
     end
   end
 
+  def self.errored_runs
+    @@errored_runs
+  end
+
+  def self.config
+    @@config
+  end
+
   def self.toast(text, duration: 1, delay: nil)
     return unless Superbara.visual?
 
@@ -206,6 +218,7 @@ require_relative "superbara/chrome"
 require_relative "superbara/cli"
 require_relative "superbara/context"
 require_relative "superbara/web"
+require_relative "superbara/errors/not_desired_tag_error"
 
 trap "SIGINT" do
   puts "

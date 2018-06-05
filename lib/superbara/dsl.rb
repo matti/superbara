@@ -117,7 +117,19 @@ return Array.from(
       Superbara.project_path = File.dirname(better_what)
     end
 
-    Superbara.current_context.__superbara_load(better_what)
+    begin
+      Superbara.current_context.__superbara_load(better_what)
+    rescue Exception => ex
+      if ENV["SUPERBARA_ON_ERROR"] == "continue"
+        colored_output = "  ERROR: ".colorize(:red)
+        colored_output << ex.message
+        #TODO: output to support "colored tags" and nesting
+        Superbara.output colored_output
+        Superbara.errored_runs << what
+      else
+        raise ex
+      end
+    end
     Superbara.project_path = old_project_path
   end
 
@@ -186,6 +198,35 @@ return Array.from(
       sleep 0.09
     end
     true
+  end
+
+  def tag(*tags, &block)
+    tags.flatten!
+
+    desired = if Superbara.config.tags.empty?
+      true
+    else
+      found = false
+      for tag in tags do
+        if Superbara.config.tags.include? tag
+          found = true
+          break
+        end
+      end
+
+      found
+    end
+
+    if desired
+      if block.nil?
+        return
+      else
+        value = block.call
+        return value
+      end
+    else
+      raise Superbara::Errors::NotDesiredTagError
+    end
   end
 
   def wait(seconds=5, &block)

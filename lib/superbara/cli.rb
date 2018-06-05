@@ -159,7 +159,25 @@ scroll 50
 
           case main_command
           when "run"
-            exit 0
+            if Superbara.errored_runs.any?
+              puts ""
+              error_or_errors = if Superbara.errored_runs.size > 1
+                "errors"
+              else
+                "error"
+              end
+
+              puts "Run had #{Superbara.errored_runs.size} #{error_or_errors}!".colorize(:red)
+              puts ""
+              puts "Following runs errored:"
+              for errored_run in Superbara.errored_runs
+                puts "  #{errored_run}"
+              end
+
+              exit! 1 #TODO: at_exit handler instead?
+            else
+              exit 0
+            end
           when "start"
             Superbara.current_context.__superbara_eval """
 debug disable_whereami: true, help: false;

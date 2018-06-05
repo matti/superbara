@@ -24,4 +24,24 @@ if [ "$exit_status" != 1 ]; then
   exit 1
 fi
 
+set +e
+  SUPERBARA_ON_ERROR=continue exe/superbara run tests/envs/on_error
+  exit_status=$?
+set -e
+
+if [ "$exit_status" != 1 ]; then
+  echo "err! SUPERBARA_ON_ERROR=continue"
+  exit 1
+fi
+
+set +e
+  exe/superbara run tests/envs/on_error
+  exit_status=$?
+set -e
+
+if [ "$exit_status" != 1 ]; then
+  echo "err! tests/envs/on_error"
+  exit 1
+fi
+
 echo "success!"

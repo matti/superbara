@@ -15,7 +15,11 @@ sleep 0.0001
   end
 
   def __superbara_load(path)
-    load path, true
+    begin
+      load path, true
+    rescue Superbara::Errors::NotDesiredTagError
+      Superbara.output "  ..skipped due to tag not found"
+    end
   end
 
   def __superbara_eval(str)
