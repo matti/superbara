@@ -24,6 +24,16 @@ module Superbara
   @@project_path = Dir.pwd
   @@config = Superbara::Config.new
   @@errored_runs = []
+  @@main = nil
+
+  def self.main=(main)
+    @@main=main
+  end
+
+  def self.main
+    @@main
+  end
+
 
   def self.start!
     @@started_at = Time.now
@@ -212,6 +222,8 @@ if (window.document.body) {
   end
 end
 
+Superbara.main = self
+
 require_relative "superbara/version"
 require_relative "superbara/helpers"
 require_relative "superbara/chrome"
@@ -241,3 +253,4 @@ else
 end
 
 Capybara.default_max_wait_time = 0.1
+

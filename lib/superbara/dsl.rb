@@ -87,7 +87,7 @@ return Array.from(
   end
 
   @@once_runs = []
-  def run(what, once: false, &block)
+  def run(what, once: false, **params, &block)
     if once
       if @@once_runs.include? what
         if block
@@ -118,7 +118,7 @@ return Array.from(
     end
 
     begin
-      Superbara.current_context.__superbara_load(better_what)
+      Superbara.current_context.__superbara_load(better_what, params)
     rescue Exception => ex
       if ENV["SUPERBARA_ON_ERROR"] == "continue"
         colored_output = "  ERROR: ".colorize(:red)

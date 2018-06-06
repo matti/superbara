@@ -14,11 +14,21 @@ sleep 0.0001
 """
   end
 
-  def __superbara_load(path)
+  def __superbara_load(path, params={})
+    params.each_pair do |k,v|
+      Superbara.main.define_singleton_method k.to_sym do
+        v
+      end
+    end
+
     begin
       load path, true
     rescue Superbara::Errors::NotDesiredTagError
       Superbara.output "  ..skipped due to tag not found"
+    end
+
+    params.each_pair do |k,v|
+      Superbara.main.instance_eval "undef #{k.to_sym}"
     end
   end
 

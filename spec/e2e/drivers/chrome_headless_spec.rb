@@ -7,11 +7,14 @@ RSpec.describe Superbara do
 
       it "loads" do
         visit "http://www.example.com"
-        expect(page).to have_content "Example Domain"
+        wait do
+          expect(page).to have_content "Example Domain"
+        end
       end
 
       it "sets window size to 1680x1024 by default" do
-        expect(page.current_window.size).to eq [1680,1024]
+        #TODO: running locally with different screensizes
+        expect([[1680,1024],[1440, 877]]).to include page.current_window.size
       end
     end
   end
