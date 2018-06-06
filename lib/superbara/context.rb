@@ -16,12 +16,6 @@ sleep 0.0001
 
   def __superbara_load(path, params={})
     params.each_pair do |k,v|
-      Superbara.main.define_singleton_method k.to_sym do
-        v
-      end
-    end
-
-    params.each_pair do |k,v|
       eval = "@#{k} = "
       eval << "'" if v.class == String
       eval << v
