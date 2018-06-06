@@ -1,2 +1,2 @@
-run "has_locals", first: "hello", second: "world"
-run "has_no_locals"
+run "has_instance_variables", first: "hello", second: "world"
+run "has_no_instance_variables"

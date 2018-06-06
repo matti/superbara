@@ -117,6 +117,7 @@ return Array.from(
       Superbara.project_path = File.dirname(better_what)
     end
 
+    error_happened = false
     begin
       Superbara.current_context.__superbara_load(better_what, params)
     rescue Exception => ex
@@ -126,11 +127,19 @@ return Array.from(
         #TODO: output to support "colored tags" and nesting
         Superbara.output colored_output
         Superbara.errored_runs << what
+        error_happened = true
       else
         raise ex
       end
     end
+
     Superbara.project_path = old_project_path
+
+    if error_happened
+      false
+    else
+      true
+    end
   end
 
   def visit(visit_uri_or_domain_or_path)

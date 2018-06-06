@@ -1,6 +1,6 @@
 visit 'vr.fi'
 
-languages = wait 3 do
+languages = wait do
   find("div.langbox")
 end
 
@@ -16,6 +16,6 @@ type "tamp", :down, :enter
 
 type :enter
 
-wait 5 do
+wait 10 do
   has_text? "Outbound journey:  Helsinki → Tampere"
 end

@@ -21,6 +21,14 @@ sleep 0.0001
       end
     end
 
+    params.each_pair do |k,v|
+      eval = "@#{k} = "
+      eval << "'" if v.class == String
+      eval << v
+      eval << "'" if v.class == String
+      Superbara.main.instance_eval "@#{k} = #{eval}"
+    end
+
     begin
       load path, true
     rescue Superbara::Errors::NotDesiredTagError
@@ -28,7 +36,7 @@ sleep 0.0001
     end
 
     params.each_pair do |k,v|
-      Superbara.main.instance_eval "undef #{k.to_sym}"
+      Superbara.main.instance_eval "remove_instance_variable '@#{k}'"
     end
   end
 
