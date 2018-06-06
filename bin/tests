@@ -44,4 +44,17 @@ if [ "$exit_status" != 1 ]; then
   exit 1
 fi
 
+SUPERBARA_TAGS=example exe/superbara run tests/tags
+
+set +e
+  SUPERBARA_TAGS=fails exe/superbara run tests/tags
+  exit_status=$?
+set -e
+
+if [ "$exit_status" != 1 ]; then
+  echo "err! tests/tags when fails"
+  exit 1
+fi
+
+
 echo "success!"

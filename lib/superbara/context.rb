@@ -23,14 +23,21 @@ sleep 0.0001
       Superbara.main.instance_eval "@#{k} = #{eval}"
     end
 
+    not_desired_tag_error_occurred = false
     begin
       load path, true
     rescue Superbara::Errors::NotDesiredTagError
-      Superbara.output "  ..skipped due to tag not found"
+      not_desired_tag_error_occurred = true
+      Superbara.output "  ..skipped due to tag not found in tags: #{Superbara.config.tags.join(",")}"
+    ensure
+      params.each_pair do |k,v|
+        Superbara.main.instance_eval "remove_instance_variable '@#{k}'"
+      end
     end
 
-    params.each_pair do |k,v|
-      Superbara.main.instance_eval "remove_instance_variable '@#{k}'"
+    if not_desired_tag_error_occurred
+      # sending it forward for run to return false
+      raise Superbara::Errors::NotDesiredTagError
     end
   end
 

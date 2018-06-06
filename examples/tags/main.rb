@@ -1,2 +1,0 @@
-run "simple"
-run "block"

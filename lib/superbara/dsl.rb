@@ -117,9 +117,12 @@ return Array.from(
       Superbara.project_path = File.dirname(better_what)
     end
 
+    not_desired_tag_happened = false
     error_happened = false
     begin
       Superbara.current_context.__superbara_load(better_what, params)
+    rescue Superbara::Errors::NotDesiredTagError
+      not_desired_tag_happened = true
     rescue Exception => ex
       if ENV["SUPERBARA_ON_ERROR"] == "continue"
         colored_output = "  ERROR: ".colorize(:red)
@@ -135,7 +138,7 @@ return Array.from(
 
     Superbara.project_path = old_project_path
 
-    if error_happened
+    if error_happened || not_desired_tag_happened
       false
     else
       true
