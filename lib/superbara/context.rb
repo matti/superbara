@@ -24,19 +24,29 @@ sleep 0.0001
     end
 
     not_desired_tag_error_occurred = false
+    export_stops_error = nil
     begin
       load path, true
-    rescue Superbara::Errors::NotDesiredTagError
+    rescue Superbara::Errors::ExportStopsError => ex
+      export_stops_error = ex
+    rescue Superbara::Errors::NotDesiredTagError => ex
       not_desired_tag_error_occurred = true
-      Superbara.output "  ..skipped due to tag not found in tags: #{Superbara.config.tags.join(",")}"
+      test_tags = Marshal.load(ex.message).join(",")
+      allowed_tags = Superbara.config.tags.join(",")
+      Superbara.output "  ..skipped due to test tags (#{test_tags}) not found in current tags: #{allowed_tags}"
     ensure
       params.each_pair do |k,v|
         Superbara.main.instance_eval "remove_instance_variable '@#{k}'"
       end
     end
 
+    if export_stops_error
+      # sending it forward for run to return what's inside
+      raise export_stops_error
+    end
+
     if not_desired_tag_error_occurred
-      # sending it forward for run to return false
+      # FAKENEWS: sending it forward for run to return false
       raise Superbara::Errors::NotDesiredTagError
     end
   end

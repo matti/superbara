@@ -86,6 +86,10 @@ return Array.from(
     e.click
   end
 
+  def export(e)
+    raise Superbara::Errors::ExportStopsError, Marshal.dump(e)
+  end
+
   @@once_runs = []
   def run(what, once: false, **params, &block)
     if once
@@ -117,12 +121,12 @@ return Array.from(
       Superbara.project_path = File.dirname(better_what)
     end
 
-    not_desired_tag_happened = false
-    error_happened = false
+    export_object = nil
     begin
       Superbara.current_context.__superbara_load(better_what, params)
     rescue Superbara::Errors::NotDesiredTagError
-      not_desired_tag_happened = true
+    rescue Superbara::Errors::ExportStopsError => ex
+      export_object = Marshal.load ex.message
     rescue Exception => ex
       if ENV["SUPERBARA_ON_ERROR"] == "continue"
         colored_output = "  ERROR: ".colorize(:red)
@@ -138,11 +142,7 @@ return Array.from(
 
     Superbara.project_path = old_project_path
 
-    if error_happened || not_desired_tag_happened
-      false
-    else
-      true
-    end
+    export_object
   end
 
   def visit(visit_uri_or_domain_or_path)
@@ -237,7 +237,7 @@ return Array.from(
         return value
       end
     else
-      raise Superbara::Errors::NotDesiredTagError
+      raise Superbara::Errors::NotDesiredTagError, Marshal.dump(tags)
     end
   end
 

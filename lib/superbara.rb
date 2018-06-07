@@ -231,6 +231,7 @@ require_relative "superbara/cli"
 require_relative "superbara/context"
 require_relative "superbara/web"
 require_relative "superbara/errors/not_desired_tag_error"
+require_relative "superbara/errors/export_stops_error"
 
 trap "SIGINT" do
   puts "

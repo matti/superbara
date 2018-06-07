@@ -4,17 +4,13 @@ notags = run "notags"
 fails = run "fails"
 
 assert "simple" do
-  simple == true
+  simple == "simple"
 end
 
 assert "block" do
-  block == true
+  block == "block"
 end
 
 assert "notags" do
-  notags == true
-end
-
-assert "fails" do
-  fails == false
+  notags == "notags"
 end
