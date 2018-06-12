@@ -364,6 +364,7 @@ return Array.from(
     end
 
     $__superbara_supress_pry_whereami = true if exception_occurred || disable_whereami
+    Superbara.start_did_open_debug=true
     Pry.start(binding.of_caller(1))
   end
 end; end
