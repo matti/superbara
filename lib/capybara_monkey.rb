@@ -1,3 +1,29 @@
+class Capybara::Selenium::Node < Capybara::Driver::Node
+  def path
+    path = find_xpath(XPath.ancestor_or_self).reverse
+
+    result = []
+    while (node = path.shift)
+      parent = path.first
+      selector = node.tag_name
+      if parent
+        siblings = parent.find_xpath(selector)
+
+        #MONKEY START https://github.com/teamcapybara/capybara/issues/2048
+        if selector == "svg" && siblings.size == 0
+          siblings = parent.find_xpath "//*[local-name() = 'svg']"
+        end
+        #MONKEY END
+
+        selector += "[#{siblings.index(node) + 1}]" unless siblings.size == 1
+      end
+      result.push selector
+    end
+
+    '/' + result.reverse.join('/')
+  end
+end
+
 module Superbara
   module CapybaraMonkey
     module Node
