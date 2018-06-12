@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -e
 version=$(exe/superbara version)
-chromedriver_version=2.38
+chromedriver_version=2.40
 
 gem uninstall -a superbara
 
