@@ -1,89 +1,10 @@
-module Superbara; class Context
-  require_relative "dsl"
-  include Capybara::DSL
-  include Superbara::DSL
-
-  def initialize
-    @__superbara_binding = binding
+module Superbara
+  module Context
   end
+end
 
-  def __superbara_debug
-    __superbara_eval """
-debug disable_whereami: true, help: false
-sleep 0.0001
-"""
-  end
-
-  def __superbara_load(path, params={})
-    params.each_pair do |k,v|
-      eval = "@#{k} = "
-      eval << "'" if v.class == String
-      eval << v
-      eval << "'" if v.class == String
-      Superbara.main.instance_eval "@#{k} = #{eval}"
-    end
-
-    not_desired_tag_error_occurred = false
-    export_stops_error = nil
-    begin
-      load path, true
-    rescue Superbara::Errors::ExportStopsError => ex
-      export_stops_error = ex
-    rescue Superbara::Errors::NotDesiredTagError => ex
-      not_desired_tag_error_occurred = true
-      test_tags = Marshal.load(ex.message).join(",")
-      allowed_tags = Superbara.config.tags.join(",")
-      Superbara.output "  ..skipped due to test tags (#{test_tags}) not found in current tags: #{allowed_tags}"
-    ensure
-      params.each_pair do |k,v|
-        Superbara.main.instance_eval "remove_instance_variable '@#{k}'"
-      end
-    end
-
-    if export_stops_error
-      # sending it forward for run to return what's inside
-      raise export_stops_error
-    end
-
-    if not_desired_tag_error_occurred
-      # FAKENEWS: sending it forward for run to return false
-      raise Superbara::Errors::NotDesiredTagError
-    end
-  end
-
-  def __superbara_eval(str)
-    @__superbara_binding.eval str
-  end
-
-  def method_missing(m, *args, &block)
-    super unless Superbara.shell?
-
-    selector = m.to_s
-    finder_args = args[0] if args.any?
-
-    would_find_size = evaluate_script "document.querySelectorAll('#{m}').length"
-    if would_find_size > 50
-      puts "tried to find with selector '#{m}', but would return over 50 elements (#{would_find_size}) and hang."
-      return false
-    end
-
-    print "finding all '#{m}'"
-
-    results = if finder_args
-      puts " #{finder_args}"
-      all selector, finder_args
-    else
-      puts ""
-      all selector
-    end
-
-    if results.size == 1
-      results.first.show
-    elsif results.size > 1
-      results.show(styles: [{"border" =>  "20px dashed Red"}])
-    else
-      []
-    end
-  end
-
-end; end
+require_relative "context/base"
+require_relative "context/shell"
+require_relative "context/start"
+require_relative "context/run"
+require_relative "context/eval"

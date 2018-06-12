@@ -9,8 +9,12 @@ RSpec.describe "cli shell" do
   it "opens with localhost" do
     @k.out.once "visit http://localhost:4567" do
     end.once "[ console ]" do
-      @k.in.writeln "e = find 'h1'"
-      @k.in.writeln "e.text"
+      @k.in.writeln """
+e = wait 3 do
+  find 'h1'
+end
+"""
+      @k.in.writeln 'e.text'
     end.once "=>" do
     end.once 'Capybara::Node::Element tag="h1" path="/html/body/h1"' do
     end.once "Superbara" do
@@ -31,15 +35,4 @@ RSpec.describe "cli shell" do
     @k.run
     expect(@k.code).to eq 0
   end
-
-  it "has method missing finding" do
-    @k.out.once "[ console ]" do
-      @k.in.writeln "h1"
-    end.once 'Capybara::Node::Element tag="h1" path="/html/body/h1"' do
-      @k.in.writeln "q"
-    end
-    @k.run
-    expect(@k.code).to eq 0
-  end
-
 end

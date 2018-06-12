@@ -1,4 +1,4 @@
 run "vars"
-run "webapp", once: true
+run "webapp", {}, once: true
 
 visit "#{$test_host}:4567"

@@ -110,109 +110,89 @@ scroll 50
     end
 
     Pry.start if ENV['SUPERBARA_DEBUG']
-    ctx = nil
     webapp_thread = nil
     puts "== superbara #{Superbara::VERSION} =="
+
     loop do
-      Superbara.current_context = Superbara::Context.new
+      case main_command
+      when "web"
+        webapp = Superbara::Web.new port: (ENV['SUPERBARA_WEB_PORT'] || 4567)
+        webapp.run!
+        exit 0
+      when "shell"
+        Superbara.visual_enable!
+        Superbara.shell_enable!
 
-      begin
-        case main_command
-        when "web"
-          webapp = Superbara::Web.new port: (ENV['SUPERBARA_WEB_PORT'] || 4567)
-          webapp.run!
-          exit 0
-        when "shell"
-          Superbara.visual_enable!
-          Superbara.shell_enable!
-
-          unless webapp_thread
-            webapp_thread = Thread.new do
-              webapp = Superbara::Web.new access_log: false
-              webapp.run!
-            end
+        unless webapp_thread
+          webapp_thread = Thread.new do
+            webapp = Superbara::Web.new access_log: false
+            webapp.run!
           end
-          # to make debugger work (TODO)
-          extend Capybara::DSL
-          extend Superbara::DSL
-          Superbara.current_context.__superbara_eval "visit 'localhost:4567'"
-          Superbara.current_context.__superbara_debug # <-- ONLY WORKS WITH THIS??? TODO
-          exit 0
-        when "run", "start"
-          puts "project: #{Superbara.project_name}"
-          puts ""
-          puts "t      action".colorize(:light_black)
-
-          Superbara.start!
-          Superbara.visual_disabled do
-            Superbara.current_context.__superbara_eval "visit 'about:blank'"
-          end
-
-          case main_command
-          when "start"
-            Superbara.visual_enable!
-          end
-
-          Superbara.current_context.__superbara_load File.join(Superbara.project_path, project_entrypoint)
-          puts """
-  🏁 🏁 🏁 done."""
-
-          case main_command
-          when "run"
-            if Superbara.errored_runs.any?
-              puts ""
-              error_or_errors = if Superbara.errored_runs.size > 1
-                "errors"
-              else
-                "error"
-              end
-
-              puts "Run had #{Superbara.errored_runs.size} #{error_or_errors}!".colorize(:red)
-              puts ""
-              puts "Following runs errored:"
-              for errored_run in Superbara.errored_runs
-                puts "  #{errored_run}"
-              end
-
-              exit! 1 #TODO: at_exit handler instead?
-            else
-              exit 0
-            end
-          when "start"
-            Superbara.current_context.__superbara_eval """
-debug disable_whereami: true, help: false;
-sleep 0.0001
-            """
-          end
-        else
-          puts "Unknown command: #{main_command}"
-          exit 1
         end
-      rescue Exception => ex
-        return if ex.class == SystemExit
 
-        begin
-          offending_file_path_and_line_in_this = ex.backtrace.detect { |line| line.end_with?("`<top (required)>'") }
-          offending_file_path, offending_line, _ = offending_file_path_and_line_in_this.split(":")
-          offending_code = IO.readlines(offending_file_path)[offending_line.to_i-1]
-        rescue Exception => ex_while_parsing
-          raise ex
+
+        Superbara::Context::Shell.new "visit 'localhost:4567'"
+      when "run", "start"
+        puts "project: #{Superbara.project_name}"
+        puts ""
+        puts "t      action".colorize(:light_black)
+
+        Superbara.start!
+
+        Superbara.visual_disabled do
+          Superbara::Context::Eval.new "visit 'about:blank'"
         end
-        puts """
-== Exception ==""".colorize(:red)
-        puts """#{ex.class}
-#{ex.message}
-in #{offending_file_path}:#{offending_line}
-#{offending_line}: #{offending_code}""".colorize(:light_black)
 
         case main_command
         when "start"
-          Superbara.current_context.instance_eval  """debug disable_whereami: true, help: false
-sleep 0.001
-"""
-        else
-          exit 1
+          Superbara.visual_enable!
+
+          Superbara.start_did_open_debug = false
+          Superbara::Context::Start.new File.join(Superbara.project_path, project_entrypoint)
+          unless Superbara.start_did_open_debug
+            puts
+            print "WARNING: ".colorize(:yellow)
+            puts "your script had a return statement - local variables NOT available in debugger"
+            Superbara::Context::Shell.new
+          end
+        when "run"
+          begin
+            Superbara::Context::Run.new File.join(Superbara.project_path, project_entrypoint)
+          rescue Superbara::Errors::NotDesiredTagError => ex
+            test_tags = Marshal.load(ex.message).join(",")
+            allowed_tags = Superbara.config.tags.join(",")
+            Superbara.output "  ..skipped due to test tags (#{test_tags}) not found in current tags: #{allowed_tags}"
+          rescue => ex
+            Superbara.print_error ex
+            exit 1
+          else
+            puts """
+🏁 🏁 🏁 done."""
+          end
+
+          if Superbara.errored_runs.any?
+            puts ""
+            error_or_errors = if Superbara.errored_runs.size > 1
+              "errors"
+            else
+              "error"
+            end
+
+            puts "Run had #{Superbara.errored_runs.size} #{error_or_errors}!".colorize(:red)
+            puts ""
+            puts "Following runs errored:"
+            for errored_run in Superbara.errored_runs
+              puts "  #{errored_run}"
+            end
+
+            exit 1
+          else
+            exit 0
+          end
         end
+      else
+        puts "Unknown command: #{main_command}"
+        exit 1
       end
     end
   end

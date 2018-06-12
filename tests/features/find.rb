@@ -1,6 +1,9 @@
 run "../common"
 
-h1 = find "h1"
+h1 = wait do
+  find "h1"
+end
+
 assert h1.text do
   h1.text == "Superbara"
 end

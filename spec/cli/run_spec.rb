@@ -24,7 +24,7 @@ RSpec.describe "cli run" do
   describe "fail" do
     before :each do
       @k = kommando_maker "exe/superbara run tests/fail", {
-        timeout: 5
+        timeout: 10
       }
     end
 

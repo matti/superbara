@@ -1,4 +1,4 @@
-run "../common", once: true
+run "../common", {}, once: true
 
 wait "3" do
   has_text? "Superbara"

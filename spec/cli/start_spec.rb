@@ -8,21 +8,7 @@ RSpec.describe "cli run" do
 
   it "opens console after run" do
     @k.out.once 'run ../common' do
-    end.once 'done.' do
-    end.once '[ console ]' do
-      @k.in.writeln "q"
-    end
-    @k.run
-
-    expect(@k.code).to eq 0
-  end
-
-  it "runs, restarts and skips common" do
-    @k.out.once 'run ../common' do
-    end.once 'done.' do
-    end.once '[ console ]' do
-      @k.in.writeln "r"
-    end.once 'common already loaded' do
+    end.once 'run minimal' do
     end.once 'done.' do
     end.once '[ console ]' do
       @k.in.writeln "q"

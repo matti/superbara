@@ -11,8 +11,6 @@ require_relative "selenium_monkey"
 require_relative "capybara_monkey"
 require_relative "pry_monkey"
 
-::Kernel.send :undef_method, :p
-
 require_relative "superbara/config"
 
 module Superbara
@@ -24,16 +22,6 @@ module Superbara
   @@project_path = Dir.pwd
   @@config = Superbara::Config.new
   @@errored_runs = []
-  @@main = nil
-
-  def self.main=(main)
-    @@main=main
-  end
-
-  def self.main
-    @@main
-  end
-
 
   def self.start!
     @@started_at = Time.now
@@ -96,6 +84,14 @@ module Superbara
     @@current_context
   end
 
+  @@last_context_return_value = nil
+  def self.last_context_return_value=(value)
+    @@last_context_return_value = value
+  end
+  def self.last_context_return_value
+    @@last_context_return_value
+  end
+
   def self.output(str)
     if Superbara.shell? || Superbara.seconds_since_start.nil?
       puts str
@@ -152,12 +148,33 @@ module Superbara
     end
   end
 
+  def self.print_error(ex)
+    puts ""
+    print "Error: ".colorize(:red)
+    puts ex.message.split(" for #<Superbara::Context").first
+    puts "       in #{ex.backtrace_locations.first.path}:#{ex.backtrace_locations.first.lineno}"
+  end
+
+  def self.print_tag_skip(ex)
+    test_tags = Marshal.load(ex.message).join(",")
+    allowed_tags = Superbara.config.tags.join(",")
+    Superbara.output "  ..skipped due to test tags (#{test_tags}) not found in current tags: #{allowed_tags}"
+  end
+
   def self.errored_runs
     @@errored_runs
   end
 
   def self.config
     @@config
+  end
+
+  def self.start_did_open_debug
+    @@start_did_open_debug
+  end
+
+  def self.start_did_open_debug=(value)
+    @@start_did_open_debug = value
   end
 
   def self.toast(text, duration: 1, delay: nil)
@@ -222,8 +239,6 @@ if (window.document.body) {
   end
 end
 
-Superbara.main = self
-
 require_relative "superbara/version"
 require_relative "superbara/helpers"
 require_relative "superbara/chrome"
@@ -231,7 +246,6 @@ require_relative "superbara/cli"
 require_relative "superbara/context"
 require_relative "superbara/web"
 require_relative "superbara/errors/not_desired_tag_error"
-require_relative "superbara/errors/export_stops_error"
 
 trap "SIGINT" do
   puts "

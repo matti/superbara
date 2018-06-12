@@ -74,10 +74,10 @@ find "h1"
 run "vars"
 
 # possible to run just once per session (superbara start) to speed up
-run "login", once: true
+run "login", {}, once: true
 
 # ..and do something when already ran
-run "login", once: true do
+run "login", {}, once: true do
   # when already logged in
   visit "http://www.example.com/main"
 end

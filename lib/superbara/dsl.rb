@@ -17,9 +17,9 @@ module Superbara; module DSL
     return unless failed
 
     if message
-      Superbara.output ("FAIL: ".colorize(:red) + message)
+      Superbara.output ("FAIL: ".colorize(:red) + message.inspect)
     else
-      Superbara.output "FAIL: ".colorize(:red)
+      Superbara.output "FAIL".colorize(:red)
     end
 
     exit 1
@@ -86,19 +86,18 @@ return Array.from(
     e.click
   end
 
-  def export(e)
-    raise Superbara::Errors::ExportStopsError, Marshal.dump(e)
-  end
-
   @@once_runs = []
-  def run(what, once: false, **params, &block)
-    if once
+  def run(what, params={}, args={}, &block)
+    Superbara.last_context_return_value = nil
+
+    if args[:once] == true
       if @@once_runs.include? what
         if block
           value = block.call
           return value
         else
-          return false
+          Superbara.output "run #{what} skip"
+          return nil
         end
       else
         @@once_runs << what
@@ -121,13 +120,10 @@ return Array.from(
       Superbara.project_path = File.dirname(better_what)
     end
 
-    export_object = nil
     begin
-      Superbara.current_context.__superbara_load(better_what, params)
+      Superbara::Context::Run.new better_what, params
     rescue Superbara::Errors::NotDesiredTagError
-    rescue Superbara::Errors::ExportStopsError => ex
-      export_object = Marshal.load ex.message
-    rescue Exception => ex
+    rescue => ex
       if ENV["SUPERBARA_ON_ERROR"] == "continue"
         colored_output = "  ERROR: ".colorize(:red)
         colored_output << ex.message
@@ -141,8 +137,7 @@ return Array.from(
     end
 
     Superbara.project_path = old_project_path
-
-    export_object
+    Superbara.last_context_return_value
   end
 
   def visit(visit_uri_or_domain_or_path)
@@ -242,6 +237,8 @@ return Array.from(
   end
 
   def wait(seconds=5, &block)
+    raise "block not given" unless block
+
     def wait_formatted_output(status, took_delta)
       word, color = if status
         ["ok", :green]
@@ -370,6 +367,3 @@ return Array.from(
     Pry.start(binding.of_caller(1))
   end
 end; end
-
-extend Capybara::DSL
-extend Superbara::DSL  # override Capybara methods

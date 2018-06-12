@@ -2,14 +2,14 @@ first = run "first_failing"
 second = run "second_ok"
 third = run "third_failing"
 
-assert "first" do
+assert first do
   first == nil
 end
 
-assert "second" do
+assert second do
   second == "second"
 end
 
-assert "third" do
+assert third do
   third == nil
 end

@@ -1,3 +1,3 @@
 visit "example.com"
 
-export "notags"
+return "notags"

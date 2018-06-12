@@ -103,7 +103,7 @@ Pry::Commands.command /^help$/, "help" do
 end
 
 Pry::Commands.command /^q$/, "abort" do
-  exit 1
+  exit 0
 end
 
 Pry::Commands.command /^r$/, "retry" do

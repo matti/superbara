@@ -2,5 +2,5 @@ tag "example", "simple"
 
 visit "example.com"
 
-export "simple"
+return "simple"
 asdf # must not reach here

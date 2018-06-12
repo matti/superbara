@@ -1,1 +1,1 @@
-export "second"
+return "second"
