@@ -246,6 +246,9 @@ require_relative "superbara/cli"
 require_relative "superbara/context"
 require_relative "superbara/web"
 require_relative "superbara/errors/not_desired_tag_error"
+require_relative "superbara/pom"
+require_relative "superbara/pcm"
+require_relative "superbara/pcom"
 
 trap "SIGINT" do
   puts "

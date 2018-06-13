@@ -56,5 +56,6 @@ if [ "$exit_status" != 1 ]; then
   exit 1
 fi
 
+exe/superbara run tests/pom_pcm_pcom
 
 echo "success!"
