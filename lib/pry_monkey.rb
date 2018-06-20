@@ -40,6 +40,9 @@ class Pry
   end
 end
 
+#TODO: maybefix?
+Pry.config.input = STDIN if ENV['SUPERBARA_DISABLE_READLINE']
+
 Pry.config.prompt = proc {
   prefix = "\n==[ console ]== (".colorize(:black).on_white
 
