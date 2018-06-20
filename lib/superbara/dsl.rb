@@ -93,6 +93,7 @@ return Array.from(
   end
 
   def click_text(text)
+    Superbara.output "clicking text '#{text}'"
     find_text(text)&.click
   end
 
