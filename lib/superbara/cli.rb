@@ -29,7 +29,7 @@ module Superbara; module CLI
       exit 0
     when "web", "shell"
       #
-    when "init", "init:robot"
+    when "init", "init:robot", "init:rspec"
       project_name = ARGV[1]
       unless project_name
         puts "project name missing"
@@ -82,6 +82,17 @@ Result Should Contain
     [arguments]     ${content}
     Wait Until Page Contains    ${content}   10 s
 """, "main.robot", "start:robot"]
+      when "init:rspec"
+        ["""RSpec.describe 'example.com' do
+  it 'has text Example Domain' do
+    visit 'example.com'
+
+    wait do
+      has_text? 'Example Domain'
+    end
+  end
+end
+""", "main_spec.rb", "start:rspec"]
       end
 
       Dir.mkdir project_name
