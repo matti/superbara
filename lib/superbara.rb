@@ -47,6 +47,7 @@ module Superbara
   def self.visual?
     return true if @@visual
     return true if ENV["SUPERBARA_VISUAL"]
+    return false
   end
 
   def self.visual_disabled(&block)
@@ -64,6 +65,16 @@ module Superbara
 
     ENV["SUPERBARA_VISUAL"] = "true" if env_was_set
     Superbara.visual_enable! if visual_was_set
+
+    value
+  end
+
+  def self.visual_enabled(&block)
+    visual_was_disabled = true unless Superbara.visual?
+
+    Superbara.visual_enable! if visual_was_disabled
+    value = block.call
+    Superbara.visual_disable! if visual_was_disabled
 
     value
   end
@@ -123,6 +134,12 @@ module Superbara
 
   def self.chromedriver_path
     path = File.join(File.expand_path('~'), ".superbara", "chromedriver")
+    path << ".exe" if Superbara.platform == "win32"
+    path
+  end
+
+  def self.robot_path
+    path = File.join(File.expand_path('~'), ".superbara", "robot")
     path << ".exe" if Superbara.platform == "win32"
     path
   end

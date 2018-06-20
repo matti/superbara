@@ -1,10 +1,14 @@
+return if $0 == "exe/superbara"
+
 require "bundler/setup"
 require "superbara"
-require "superbara/rspec"
 
 require 'kommando'
 
 RSpec.configure do |config|
+  include Capybara::DSL
+  include Superbara::DSL
+
   config.fail_fast = true
 
   # Enable flags like --only-failures and --next-failure

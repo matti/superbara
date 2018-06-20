@@ -1,8 +1,9 @@
 run "vars"
 run "webapp", {}, once: true
 
-visit "#{$test_host}:4567"
+loop do
+  visit "#{$test_host}:4567"
+  sleep 0.1
 
-wait do
-  has_text? "Superbara"
+  break if has_text? "Superbara"
 end

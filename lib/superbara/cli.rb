@@ -29,7 +29,7 @@ module Superbara; module CLI
       exit 0
     when "web", "shell"
       #
-    when "init"
+    when "init", "init:robot"
       project_name = ARGV[1]
       unless project_name
         puts "project name missing"
@@ -41,7 +41,9 @@ module Superbara; module CLI
         exit 1
       end
 
-      contents = """visit 'example.com'
+      contents, file_name, start_cmd = case main_command
+      when "init"
+        ["""visit 'example.com'
 
 wait 3 do
   has_text? 'Example Domain'
@@ -49,14 +51,46 @@ end
 
 click 'a'
 scroll 50
-"""
-      Dir.mkdir project_name
-      File.write File.join(project_name, "main.rb"), contents
+""", "main.rb", "start"]
+      when "init:robot"
+        ["""*** Settings ***
+Library           SeleniumLibrary
 
-      puts "Created directory #{project_name} with main.rb"
+*** Test Cases ***
+Google Robot Framework and Get Results
+    Open Browser To         https://www.google.com
+    Google For              Robot Framework
+    Result Should Contain   Generic test automation
+
+Visit example.com
+    Open Browser To         https://www.example.com
+    Result Should Contain   Example Domain
+
+
+*** Keywords ***
+Open Browser To
+    [arguments]     ${url}
+    Open Browser    ${url}    browser=chrome
+    Maximize Browser Window
+
+Google For
+    [arguments]     ${search_term}
+    Input Text    lst-ib    ${search_term}
+    Press Key    lst-ib    \\\\13
+
+Result Should Contain
+    [arguments]     ${content}
+    Wait Until Page Contains    ${content}   10 s
+""", "main.robot", "start:robot"]
+      end
+
+      Dir.mkdir project_name
+      File.write File.join(project_name, file_name), contents
+
+      puts "Created directory #{project_name} with #{file_name}"
       puts "Start testing with:"
       puts ""
-      puts "  superbara start #{project_name}"
+      puts "  superbara #{start_cmd} #{project_name}"
       exit 0
     else
       unless ARGV[1]
@@ -87,6 +121,13 @@ scroll 50
     FileUtils.mkdir_p target_path
     FileUtils.cp from, target
 
+    if Superbara.platform == "mac64"
+      robot_from = File.join Superbara.path, "vendor", "robot", Superbara.platform, "robot"
+      robot_target = File.join target_path, "robot"
+      File.unlink robot_target if File.exist? robot_target
+      FileUtils.cp robot_from, robot_target
+    end
+
     case main_command
     when "start", "run"
       project_path_or_file_expanded = File.expand_path(ARGV[1])
@@ -115,6 +156,64 @@ scroll 50
 
     loop do
       case main_command
+      when "start:robot"
+        require "kommando"
+
+        chromedriver_dirname = File.dirname(Superbara.chromedriver_path)
+        ENV["PATH"] = ENV["PATH"].split(":").push(chromedriver_dirname).join(":")
+        puts "#{Superbara.robot_path} -l NONE -r NONE #{Superbara.project_path}/#{project_entrypoint}"
+
+        k = Kommando.new "#{Superbara.robot_path} -l NONE -r NONE #{ARGV[1]}", {
+          output: true
+        }
+        k.run
+        puts ""
+        puts "-- [ [r]estart or [q]uit --"
+        input = $stdin.gets.chomp.downcase
+        case input
+        when "q"
+          exit 0
+        end
+      when "start:rspec"
+
+
+        require "rspec"
+        require "pry-rescue"
+
+        RSpec.configure do |config|
+          config.include Capybara::DSL
+          config.include Superbara::DSL
+
+          config.fail_fast = true
+
+          config.before(:each) do |example|
+            puts ""
+            puts " #{example.description} - #{example.location}"
+            puts "-"*IO.console.winsize.last
+          end
+
+
+          config.after(:each) do |example|
+            if example.exception
+              puts ("="*80).colorize(:yellow)
+              puts example.exception.message.colorize(:red)
+              puts ("="*80).colorize(:yellow)
+
+              Pry.commands.disabled_command "continue", "can not continue in this context"
+              Superbara.visual_enabled do
+                Pry::rescued(example.exception)
+              end
+            else
+              Pry.start
+            end
+          end
+        end
+
+        Pry::rescue do
+          RSpec::Core::Runner.run([ARGV[1]], $stderr, $stdout)
+        end
+
+        RSpec.reset
       when "web"
         webapp = Superbara::Web.new port: (ENV['SUPERBARA_WEB_PORT'] || 4567)
         webapp.run!

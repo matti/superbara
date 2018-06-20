@@ -24,6 +24,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'colorize', '~> 0.8', '>= 0.8.1'
+  spec.add_dependency 'pry'
+  spec.add_dependency 'pry-stack_explorer'
+
   spec.add_dependency 'pry-byebug', '~> 3.6', '>= 3.6.0'
   spec.add_dependency 'binding_of_caller', '~> 0.8', '>=0.8.0'
   spec.add_dependency 'capybara', '~> 3.1', '>= 3.1.0'
@@ -31,9 +34,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'faker', '~> 1.8', '>= 1.8.7'
   spec.add_dependency 'sinatra', '~> 2.0', '>= 2.0.1'
   spec.add_dependency 'astrolabe', '~> 1.3', '>= 1.3.1'
+  spec.add_dependency 'rspec', '~> 3.7', '>= 3.7.0'
+  spec.add_dependency 'pry-rescue', '~> 1.4', '>= 1.4.4'
+  spec.add_dependency 'kommando', '~> 0.1', '>= 0.1.2'
 
   spec.add_development_dependency 'bundler', '~> 1.15', '>= 1.15.0'
-  spec.add_development_dependency 'rake', '~> 10.0', '>= 10.0.0'
-  spec.add_development_dependency 'rspec', '~> 3.7', '>= 3.7.0'
-  spec.add_development_dependency 'kommando', '~> 0.1', '>= 0.1.2'
+  spec.add_development_dependency 'rake', '~> 12.3', '>= 12.3.0'
 end
