@@ -169,7 +169,11 @@ module Superbara
     puts ""
     print "Error: ".colorize(:red)
     puts ex.message.split(" for #<Superbara::Context").first
-    puts "       in #{ex.backtrace_locations.first.path}:#{ex.backtrace_locations.first.lineno}"
+    if ex.backtrace_locations
+      puts "       in #{ex.backtrace_locations.first.path}:#{ex.backtrace_locations.first.lineno}"
+    else
+      # for example <Selenium::WebDriver::Error::StaleElementReferenceError>
+    end
   end
 
   def self.print_tag_skip(ex)
