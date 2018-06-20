@@ -61,6 +61,22 @@ module Superbara; module DSL
     value
   end
 
+  def all(*args)
+    elements = super *args
+    if elements && Superbara.visual?
+      for elem in elements[0..4]
+        elem.show styles: [{
+          "border" => "10px dashed Red"
+        }]
+      end
+
+      if elements.size > 5
+        Superbara.toast "and #{elements.size-5} more"
+      end
+    end
+    elements
+  end
+
   def find_text(text)
     text.downcase!
 
