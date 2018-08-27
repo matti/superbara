@@ -1,6 +1,6 @@
 # Superbara
 
-Web app test scripting that does not hurt.
+## Web app test scripting that does not hurt.
 
 ![Demo of Superbara](demo.gif)
 
