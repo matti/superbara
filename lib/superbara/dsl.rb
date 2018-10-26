@@ -384,4 +384,13 @@ return Array.from(
     Superbara.start_did_open_debug=true
     Pry.start(binding.of_caller(1))
   end
+
+  def fullscreen(full=true)
+    if full == true
+      page.driver.fullscreen_window(current_window.handle)
+    elsif full == false
+      page.driver.maximize_window(current_window.handle)
+    end
+  end
+
 end; end
