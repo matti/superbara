@@ -47,7 +47,7 @@ module Superbara
           end
 
           def location
-            Capybara.evaluate_script("arguments[0].getBoundingClientRect()", self.native)
+            Capybara.evaluate_script "arguments[0].getBoundingClientRect()", self.native
           end
 
           def type(*inputs)

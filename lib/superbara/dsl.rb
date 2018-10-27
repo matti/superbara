@@ -386,10 +386,10 @@ return Array.from(
   end
 
   def fullscreen(full=true)
-    if full == true
-      page.driver.fullscreen_window(current_window.handle)
-    elsif full == false
-      page.driver.maximize_window(current_window.handle)
+    if full
+      page.driver.fullscreen_window current_window.handle
+    else
+      page.driver.maximize_window current_window.handle
     end
   end
 
