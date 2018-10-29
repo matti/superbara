@@ -103,6 +103,16 @@ return Array.from(
     e.click
   end
 
+  def klik(selector, options={})
+    Superbara.output "clicking '#{selector}' with #{options.inspect}"
+    el = find selector, options
+    coords = el.location
+    klikX = coords["x"] + coords["width"] / 2
+    klikY = coords["y"] + coords["height"] / 2
+    `xdotool mousemove #{klikX} #{klikY} click 1`
+    return el
+  end
+
   @@once_runs = []
   def run(what, params={}, args={}, &block)
     Superbara.last_context_return_value = nil
