@@ -103,6 +103,16 @@ return Array.from(
     e.click
   end
 
+  def klik(selector, options={})
+    Superbara.output "clicking '#{selector}' with #{options.inspect}"
+    el = find selector, options
+    coords = el.location
+    klikX = coords["x"] + coords["width"] / 2
+    klikY = coords["y"] + coords["height"] / 2
+    `xdotool mousemove #{klikX} #{klikY} click 1`
+    return el
+  end
+
   @@once_runs = []
   def run(what, params={}, args={}, &block)
     Superbara.last_context_return_value = nil
@@ -384,4 +394,13 @@ return Array.from(
     Superbara.start_did_open_debug=true
     Pry.start(binding.of_caller(1))
   end
+
+  def fullscreen(full=true)
+    if full
+      page.driver.fullscreen_window current_window.handle
+    else
+      page.driver.maximize_window current_window.handle
+    end
+  end
+
 end; end

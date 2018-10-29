@@ -46,6 +46,10 @@ module Superbara
             self
           end
 
+          def location
+            Capybara.evaluate_script "arguments[0].getBoundingClientRect()", self.native
+          end
+
           def type(*inputs)
             self.native.type(*inputs)
           end
