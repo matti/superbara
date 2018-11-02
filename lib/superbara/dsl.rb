@@ -396,11 +396,33 @@ return Array.from(
   end
 
   def fullscreen(full=true)
+    platform = RUBY_PLATFORM
     if full
-      page.driver.fullscreen_window current_window.handle
+      if platform.downcase.include? 'linux'
+        page.driver.fullscreen_window current_window.handle
+      else
+        execute_script <<-FE
+          fsbutton = document.createElement('button');
+          fsbutton.id = 'fsbutton';
+          fsbutton.style.width = "10px";
+          fsbutton.style.height = "5px";
+          document.body.appendChild(fsbutton);
+          fsbutton.addEventListener('click', function () { document.body.webkitRequestFullScreen(); });
+        FE
+
+        begin
+          click '#fsbutton'
+        rescue
+        end
+
+        execute_script <<-FE
+          fsbutton = document.getElementById('fsbutton')
+          document.body.removeChild(fsbutton)
+        FE
+      end
     else
       page.driver.maximize_window current_window.handle
     end
-  end
 
+  end
 end; end

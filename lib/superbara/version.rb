@@ -1,3 +1,3 @@
 module Superbara
-  VERSION = "0.14.4"
+  VERSION = "0.14.6"
 end
