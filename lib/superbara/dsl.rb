@@ -105,11 +105,16 @@ return Array.from(
 
   def klik(selector, options={})
     Superbara.output "clicking '#{selector}' with #{options.inspect}"
+    platform = RUBY_PLATFORM
     el = find selector, options
     coords = el.location
     klikX = coords["x"] + coords["width"] / 2
     klikY = coords["y"] + coords["height"] / 2
-    `xdotool mousemove #{klikX} #{klikY} click 1`
+    if platform.downcase.include? 'linux'
+      `xdotool mousemove #{klikX} #{klikY} click 1`
+    else
+      `cliclick c:#{klikX.floor},#{klikY.floor}`
+    end
     return el
   end
 
