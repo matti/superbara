@@ -10,7 +10,7 @@ module Superbara; module Chrome
 
   def self.register_drivers
     options = ::Selenium::WebDriver::Chrome::Options.new
-    options.add_argument 'window-size=1680,1024'
+    options.add_argument 'window-size=1300,800'
     options.add_argument 'disable-infobars'
 
     capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
@@ -31,12 +31,13 @@ module Superbara; module Chrome
     end
 
     Capybara.register_driver :chrome_remote do
-      chrome_url = ENV['CHROME_URL'] || "http://chrome:4444/wd/hub"
+      chrome_url = ENV['CHROME_URL']
 
       Capybara::Selenium::Driver.new(nil,
         browser: :remote,
         http_client: client,
         desired_capabilities: capabilities,
+        options: options,
         url: chrome_url
       )
     end
