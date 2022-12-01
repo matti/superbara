@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'capybara', '3.29', '3.29.0'
   spec.add_dependency 'selenium-webdriver', '4.0.0.alpha3', '4.0.0.alpha3'
   spec.add_dependency 'faker', '~> 1.8', '>= 1.8.7'
-  spec.add_dependency 'sinatra', '~> 2.0', '>= 2.0.1'
+  spec.add_dependency 'sinatra', '>= 2.0.1', '< 4'
   spec.add_dependency 'astrolabe', '~> 1.3', '>= 1.3.1'
   spec.add_dependency 'rspec', '~> 3.7', '>= 3.7.0'
   spec.add_dependency 'pry-rescue', '~> 1.4', '>= 1.4.4'
